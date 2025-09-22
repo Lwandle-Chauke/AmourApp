@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "337378792363",
+    "project_id": "amourdatingapp-8612c",
+    "storage_bucket": "amourdatingapp-8612c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:337378792363:android:34a26ee889ddb7726f38ee",
+        "android_client_info": {
+          "package_name": "com.datingapp.amour"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "337378792363-dl9tm4pkktqcenhfi8jjtmfo67nvsrb2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.datingapp.amour",
+            "certificate_hash": "f0db56d94e6b1bf6b6a05da1a1160a53f151f091"
+          }
+        },
+        {
+          "client_id": "337378792363-ckvrldik0n24q1ndi5m06jf48do23ufd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAILf8Bu_YTKuB2Gh9Xl2jTU7BuhBDWzeM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "337378792363-ckvrldik0n24q1ndi5m06jf48do23ufd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

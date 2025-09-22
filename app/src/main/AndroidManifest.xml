@@ -1,39 +1,41 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-                package="com.datingapp.amour">
+    package="com.datingapp.amour">
 
-                <!-- Permissions for location access -->
-                <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-                <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-                <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- needed for picking images -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-                <application
-                    android:allowBackup="true"
-                    android:icon="@mipmap/ic_launcher"
-                    android:label="Amour"
-                    android:theme="@style/Theme.Amour">
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="Amour"
+        android:theme="@style/Theme.Amour">
 
-                    <!-- Google Maps API Key -->
-                    <meta-data
-                        android:name="com.google.android.geo.API_KEY"
-                        android:value="AIzaSyB9cz7jLj4fHIzmpk9CvV_ck8j7cHNF-OU" /> <!-- USE YOUR API KEY -->
+        <!-- Google Maps API Key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB9cz7jLj4fHIzmpk9CvV_ck8j7cHNF-OU" /> <!-- replace with your actual API key -->
 
-                    <!-- App Activities -->
-                    <activity android:name=".LocationsMapActivity" />
-                    <activity android:name=".NotificationsSettingsActivity" />
-                    <activity android:name=".MessagingActivity" />
-                    <activity android:name=".MatchBrowsingActivity" />
-                    <activity android:name=".ProfileSetupActivity" />
-                    <activity android:name=".LoginActivity" />
+        <!-- App Activities -->
+        <activity android:name=".LocationsMapActivity" />
+        <activity android:name=".NotificationsSettingsActivity" />
+        <activity android:name=".MessagingActivity" />
+        <activity android:name=".MatchBrowsingActivity" />
+        <activity android:name=".ProfileSetupActivity" />
+        <activity android:name=".LoginActivity" />
 
-                    <!-- Launcher Activity -->
-                    <activity
-                        android:name=".WelcomeSignupActivity"
-                        android:exported="true">
-                        <intent-filter>
-                            <action android:name="android.intent.action.MAIN" />
-                            <category android:name="android.intent.category.LAUNCHER" />
-                        </intent-filter>
-                    </activity>
+        <!-- Launcher Activity -->
+        <activity
+            android:name=".WelcomeSignupActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
-                </application>
-            </manifest>
+    </application>
+</manifest>

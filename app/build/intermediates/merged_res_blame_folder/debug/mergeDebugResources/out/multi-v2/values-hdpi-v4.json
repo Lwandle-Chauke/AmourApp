@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.datingapp.amour.app-mergeDebugResources-41:/values-hdpi-v4/values-hdpi-v4.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\lab_services_student\\.gradle\\caches\\8.10.2\\transforms\\8a49deb142b4abdd312e73732e625ff9\\transformed\\appcompat-1.7.0\\res\\values-hdpi-v4\\values-hdpi-v4.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "6",
+                        "endColumns": "13",
+                        "endOffsets": "327"
+                    }
+                }
+            ]
+        }
+    ]
+}

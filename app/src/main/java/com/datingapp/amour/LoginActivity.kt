@@ -8,17 +8,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.datingapp.amour.data.AppDatabase
 import com.datingapp.amour.data.User
+import com.datingapp.amour.utils.Utils
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
-import java.security.MessageDigest
 
+/**
+ * Activity for login.
+ * Checks offline (Room DB) first, then retrieves user data if needed.
+ * User can pick up where they left off.
+ */
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var etEmail: EditText
     private lateinit var etPassword: EditText
     private lateinit var btnLogin: Button
     private lateinit var btnGoogle: Button
-    private lateinit var btnFacebook: Button
+    private lateinit var btnPhone: Button
     private lateinit var tvSignUp: TextView
 
     private lateinit var db: AppDatabase
@@ -32,7 +37,7 @@ class LoginActivity : AppCompatActivity() {
         etPassword = findViewById(R.id.etPassword)
         btnLogin = findViewById(R.id.btnLogin)
         btnGoogle = findViewById(R.id.btnGoogle)
-        btnFacebook = findViewById(R.id.btnFacebook)
+        btnPhone = findViewById(R.id.btnContinuePhone)
         tvSignUp = findViewById(R.id.tvSignUp)
 
         db = AppDatabase.getDatabase(this)
@@ -41,14 +46,17 @@ class LoginActivity : AppCompatActivity() {
         btnGoogle.setOnClickListener {
             Toast.makeText(this, "Google sign-in (prototype)", Toast.LENGTH_SHORT).show()
         }
-        btnFacebook.setOnClickListener {
-            Toast.makeText(this, "Facebook sign-in (prototype)", Toast.LENGTH_SHORT).show()
+        btnPhone.setOnClickListener {
+            startActivity(Intent(this, PhoneAuthActivity::class.java))
         }
         tvSignUp.setOnClickListener {
             startActivity(Intent(this, WelcomeSignupActivity::class.java))
         }
     }
 
+    /**
+     * Login with email/password
+     */
     private fun loginUser() {
         val email = etEmail.text.toString().trim()
         val password = etPassword.text.toString()
@@ -69,23 +77,19 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
-        val hashedPassword = hashPassword(password)
+        val hashedPassword = Utils.hashPassword(password)
 
-        // Check offline RoomDB first
         lifecycleScope.launch {
             val user = db.userDao().getUserByEmail(email)
             if (user != null && user.passwordHash == hashedPassword) {
+                // Login successful
                 Toast.makeText(this@LoginActivity, "Login successful!", Toast.LENGTH_SHORT).show()
                 val i = Intent(this@LoginActivity, ProfileSetupActivity::class.java)
+                i.putExtra("email", email) // Pass email to retrieve user profile
                 startActivity(i)
             } else {
                 Toast.makeText(this@LoginActivity, "Invalid email or password", Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    private fun hashPassword(password: String): String {
-        val bytes = MessageDigest.getInstance("SHA-256").digest(password.toByteArray())
-        return bytes.joinToString("") { "%02x".format(it) }
     }
 }

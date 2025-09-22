@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000000</color>
+    <color name="purple_200">#BB86FC</color>
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="teal_700">#018786</color>
+    <color name="white">#FFFFFF</color>
+    <string name="app_name">Amour</string>
+    <string name="create_account">Create account</string>
+    <string name="default_web_client_id" translatable="false">337378792363-ckvrldik0n24q1ndi5m06jf48do23ufd.apps.googleusercontent.com</string>
+    <string name="find_connections">Find meaningful connections nearby</string>
+    <string name="gcm_defaultSenderId" translatable="false">337378792363</string>
+    <string name="google_api_key" translatable="false">AIzaSyAILf8Bu_YTKuB2Gh9Xl2jTU7BuhBDWzeM</string>
+    <string name="google_app_id" translatable="false">1:337378792363:android:34a26ee889ddb7726f38ee</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyAILf8Bu_YTKuB2Gh9Xl2jTU7BuhBDWzeM</string>
+    <string name="google_storage_bucket" translatable="false">amourdatingapp-8612c.firebasestorage.app</string>
+    <string name="project_id" translatable="false">amourdatingapp-8612c</string>
+    <string name="welcome_message">Welcome to Amour</string>
+    <style name="Theme.Amour" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/teal_200</item>
+    </style>
+</resources>

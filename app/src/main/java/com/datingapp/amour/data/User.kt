@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class User(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
-    val email: String,
-    val passwordHash: String
+    val email: String? = null,        // optional for phone-only signup
+    val phone: String? = null,        // optional for phone authentication
+    val passwordHash: String? = null  // optional if signing up via phone
 )
