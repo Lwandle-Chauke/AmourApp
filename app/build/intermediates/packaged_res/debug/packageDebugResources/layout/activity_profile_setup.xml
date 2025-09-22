@@ -1,18 +1,47 @@
-<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@android:color/white">
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="24dp"
-        android:gravity="center_horizontal">
+        android:padding="24dp">
 
-        <!-- Profile Photo -->
+        <!-- Back Arrow + Title Row -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <!-- Back Button -->
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_back"
+                android:contentDescription="Back"
+                android:tint="#EC407A"
+                android:layout_marginEnd="16dp" />
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Profile Setup"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textColor="#EC407A"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Main Profile Photo -->
         <ImageView
             android:id="@+id/imgProfile"
             android:layout_width="120dp"
@@ -21,92 +50,146 @@
             android:contentDescription="Profile Picture"
             android:background="@android:color/darker_gray"
             android:scaleType="centerCrop"
+            android:layout_gravity="center_horizontal"
             android:layout_marginBottom="8dp"
             android:clickable="true"
             android:focusable="true"/>
 
         <TextView
-            android:id="@+id/tvAddPhoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tap to add profile photo"
             android:textSize="14sp"
             android:textColor="#666666"
+            android:layout_gravity="center_horizontal"
             android:layout_marginBottom="16dp"/>
 
-        <!-- User Name & Age -->
+        <!-- Additional Pictures Section -->
         <TextView
-            android:id="@+id/tvNameAge"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Name, Age"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Profile Photos (6+) -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Upload at least 6 photos"
+            android:text="Add Pictures (Minimum 6)"
+            android:textAlignment="center"
+            android:textColor="#EC407A"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
-        <LinearLayout
-            android:id="@+id/photosContainer"
-            android:orientation="horizontal"
+        <GridLayout
+            android:id="@+id/gridPictures"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:columnCount="3"
+            android:rowCount="2"
+            android:alignmentMode="alignMargins"
+            android:rowOrderPreserved="false"
+            android:columnOrderPreserved="false"
             android:layout_marginBottom="16dp"
-            android:weightSum="3">
-        </LinearLayout>
+            android:layout_gravity="center">
 
-        <!-- Structured Prompts -->
+            <!-- 6 picture frames -->
+            <ImageView
+                android:id="@+id/img1"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_margin="4dp"
+                android:src="@drawable/ic_add_photo"
+                android:scaleType="centerCrop"
+                android:background="@android:color/darker_gray"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <ImageView
+                android:id="@+id/img2"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_margin="4dp"
+                android:src="@drawable/ic_add_photo"
+                android:scaleType="centerCrop"
+                android:background="@android:color/darker_gray"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <ImageView
+                android:id="@+id/img3"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_margin="4dp"
+                android:src="@drawable/ic_add_photo"
+                android:scaleType="centerCrop"
+                android:background="@android:color/darker_gray"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <ImageView
+                android:id="@+id/img4"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_margin="4dp"
+                android:src="@drawable/ic_add_photo"
+                android:scaleType="centerCrop"
+                android:background="@android:color/darker_gray"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <ImageView
+                android:id="@+id/img5"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_margin="4dp"
+                android:src="@drawable/ic_add_photo"
+                android:scaleType="centerCrop"
+                android:background="@android:color/darker_gray"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <ImageView
+                android:id="@+id/img6"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:layout_margin="4dp"
+                android:src="@drawable/ic_add_photo"
+                android:scaleType="centerCrop"
+                android:background="@android:color/darker_gray"
+                android:clickable="true"
+                android:focusable="true"/>
+        </GridLayout>
+
+        <!-- Name -->
+        <EditText
+            android:id="@+id/etFullName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Full Name"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Age -->
+        <EditText
+            android:id="@+id/etAge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Age"
+            android:inputType="number"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Gender Identity -->
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Answer a few prompts"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
-
-        <EditText
-            android:id="@+id/etPrompt1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="A life goal of mine is..."
-            android:layout_marginBottom="8dp"/>
-
-        <EditText
-            android:id="@+id/etPrompt2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="I love to spend my weekends doing..."
-            android:layout_marginBottom="8dp"/>
-
-        <EditText
-            android:id="@+id/etPrompt3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="My friends would describe me as..."
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Bio -->
-        <EditText
-            android:id="@+id/etBio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Short bio"
-            android:inputType="textMultiLine"
-            android:lines="3"
-            android:gravity="top"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Gender -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Gender"
+            android:text="Gender Identity"
+            android:textAlignment="center"
+            android:textColor="#EC407A"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
@@ -115,61 +198,53 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:layout_marginBottom="16dp">
-
-            <RadioButton
-                android:id="@+id/rbMale"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Male"/>
-            <RadioButton
-                android:id="@+id/rbFemale"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Female"
-                android:layout_marginStart="24dp"/>
-            <RadioButton
-                android:id="@+id/rbOther"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Other"
-                android:layout_marginStart="24dp"/>
+            <RadioButton android:id="@+id/rbMale" android:text="He/Him"/>
+            <RadioButton android:id="@+id/rbFemale" android:text="She/Her" android:layout_marginStart="16dp"/>
+            <RadioButton android:id="@+id/rbThey" android:text="They/Them" android:layout_marginStart="16dp"/>
         </RadioGroup>
 
-        <!-- Preferences -->
+        <!-- Sexual Orientation -->
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Preferences"
+            android:text="Sexual Orientation"
+            android:textAlignment="center"
+            android:textColor="#EC407A"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
-        <EditText
-            android:id="@+id/etAgePreference"
+        <RadioGroup
+            android:id="@+id/rgOrientation"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Age range (e.g., 25-35)"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="16dp">
 
+            <RadioButton android:id="@+id/rbStraight" android:text="Straight"/>
+            <RadioButton android:id="@+id/rbGay" android:text="Gay" android:layout_marginTop="8dp"/>
+            <RadioButton android:id="@+id/rbLesbian" android:text="Lesbian" android:layout_marginTop="8dp"/>
+            <RadioButton android:id="@+id/rbBisexual" android:text="Bisexual" android:layout_marginTop="8dp"/>
+            <RadioButton android:id="@+id/rbAsexual" android:text="Asexual" android:layout_marginTop="8dp"/>
+            <RadioButton android:id="@+id/rbOther" android:text="Other" android:layout_marginTop="8dp"/>
+        </RadioGroup>
+
+        <!-- Location -->
         <EditText
-            android:id="@+id/etDistancePreference"
+            android:id="@+id/etLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Distance (km)"
+            android:hint="City"
             android:layout_marginBottom="16dp"/>
 
-        <EditText
-            android:id="@+id/etInterests"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Your interests (e.g., Music, Hiking)"
-            android:layout_marginBottom="16dp"/>
-
+        <!-- Save Button -->
         <Button
-            android:id="@+id/btnContinue"
+            android:id="@+id/btnSaveCore"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save Profile"
-            android:layout_marginTop="16dp"/>
+            android:text="Save  &amp;  Continue"
+            android:backgroundTint="#F48FB1"
+            android:textColor="#FFFFFF"/>
     </LinearLayout>
 </ScrollView>

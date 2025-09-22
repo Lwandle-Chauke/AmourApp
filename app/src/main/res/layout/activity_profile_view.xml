@@ -1,0 +1,140 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF0F5"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Page Title -->
+        <TextView
+            android:text="My Profile"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#EC407A"
+            android:layout_marginBottom="16dp"
+            android:textAlignment="center"/>
+
+        <!-- Profile Pictures (Horizontal Scroll for multiple images) -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fillViewport="false">
+
+            <LinearLayout
+                android:id="@+id/photoContainer"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <!-- Example: 6 pictures -->
+                <ImageView
+                    android:id="@+id/img1"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginEnd="8dp"
+                    android:scaleType="centerCrop"
+                    android:background="@android:color/darker_gray"/>
+
+                <ImageView
+                    android:id="@+id/img2"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginEnd="8dp"
+                    android:scaleType="centerCrop"
+                    android:background="@android:color/darker_gray"/>
+
+                <ImageView
+                    android:id="@+id/img3"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginEnd="8dp"
+                    android:scaleType="centerCrop"
+                    android:background="@android:color/darker_gray"/>
+
+                <ImageView
+                    android:id="@+id/img4"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginEnd="8dp"
+                    android:scaleType="centerCrop"
+                    android:background="@android:color/darker_gray"/>
+
+                <ImageView
+                    android:id="@+id/img5"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginEnd="8dp"
+                    android:scaleType="centerCrop"
+                    android:background="@android:color/darker_gray"/>
+
+                <ImageView
+                    android:id="@+id/img6"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:scaleType="centerCrop"
+                    android:background="@android:color/darker_gray"/>
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <!-- Basic Info -->
+        <TextView
+            android:id="@+id/tvNameAge"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/tvGender"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/tvOrientation"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Bio & Prompts -->
+        <TextView
+            android:id="@+id/tvBio"
+            android:textStyle="italic"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/tvPrompts"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Looking For -->
+        <TextView
+            android:id="@+id/tvLookingFor"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Preferences -->
+        <TextView
+            android:id="@+id/tvPreferences"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Interests / Lifestyle -->
+        <TextView
+            android:id="@+id/tvInterestsLifestyle"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Location -->
+        <TextView
+            android:id="@+id/tvLocation"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Edit Profile Button -->
+        <Button
+            android:id="@+id/btnEditProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Edit Profile"
+            android:backgroundTint="#F48FB1"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
+</ScrollView>

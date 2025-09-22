@@ -26,6 +26,9 @@
         <activity android:name=".MatchBrowsingActivity" />
         <activity android:name=".ProfileSetupActivity" />
         <activity android:name=".LoginActivity" />
+        <activity android:name=".ActivityInterests" />
+        <activity android:name=".ProfileViewActivity" />
+        <activity android:name=".PhoneAuthActivity" />
 
         <!-- Launcher Activity -->
         <activity

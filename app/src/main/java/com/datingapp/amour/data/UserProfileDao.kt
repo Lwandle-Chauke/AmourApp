@@ -5,12 +5,18 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
+/**
+ * DAO interface for UserProfile entity.
+ * Handles CRUD operations for user profiles.
+ */
 @Dao
 interface UserProfileDao {
 
+    // Insert or update a profile
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(profile: UserProfile)
 
+    // Retrieve a profile by email
     @Query("SELECT * FROM user_profiles WHERE email = :email LIMIT 1")
     suspend fun getProfile(email: String): UserProfile?
 }

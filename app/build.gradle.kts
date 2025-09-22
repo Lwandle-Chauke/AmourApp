@@ -46,6 +46,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation ("com.google.android.flexbox:flexbox:3.0.0")
 
     // GOOGLE PLAY SERVICES
     implementation("com.google.android.gms:play-services-maps:19.2.0")
@@ -58,6 +59,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-database-ktx")
     implementation("com.google.firebase:firebase-storage-ktx")
+    implementation(libs.firebase.database)
 
     // ROOM
     val roomVersion = "2.6.1"
