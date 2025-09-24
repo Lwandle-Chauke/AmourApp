@@ -122,6 +122,9 @@ attr alertDialogButtonGroupStyle
 attr alertDialogCenterButtons
 attr alertDialogStyle
 attr alertDialogTheme
+attr alignContent
+attr alignItems
+attr alignmentMode
 attr allowStacking
 attr alpha
 attr alphabeticModifiers
@@ -391,6 +394,8 @@ attr colorTertiary
 attr colorTertiaryContainer
 attr colorTertiaryFixed
 attr colorTertiaryFixedDim
+attr columnCount
+attr columnOrderPreserved
 attr commitIcon
 attr compatShadowEnabled
 attr constraintRotate
@@ -470,6 +475,9 @@ attr dialogTheme
 attr displayOptions
 attr divider
 attr dividerColor
+attr dividerDrawable
+attr dividerDrawableHorizontal
+attr dividerDrawableVertical
 attr dividerHorizontal
 attr dividerInsetEnd
 attr dividerInsetStart
@@ -561,6 +569,8 @@ attr fastScrollHorizontalTrackDrawable
 attr fastScrollVerticalThumbDrawable
 attr fastScrollVerticalTrackDrawable
 attr firstBaselineToTopHeight
+attr flexDirection
+attr flexWrap
 attr floatingActionButtonLargePrimaryStyle
 attr floatingActionButtonLargeSecondaryStyle
 attr floatingActionButtonLargeStyle
@@ -698,6 +708,7 @@ attr itemTextAppearanceActiveBoldEnabled
 attr itemTextAppearanceInactive
 attr itemTextColor
 attr itemVerticalPadding
+attr justifyContent
 attr keyPositionType
 attr keyboardIcon
 attr keylines
@@ -716,11 +727,15 @@ attr layout
 attr layoutDescription
 attr layoutDuringTransition
 attr layoutManager
+attr layout_alignSelf
 attr layout_anchor
 attr layout_anchorGravity
 attr layout_behavior
 attr layout_collapseMode
 attr layout_collapseParallaxMultiplier
+attr layout_column
+attr layout_columnSpan
+attr layout_columnWeight
 attr layout_constrainedHeight
 attr layout_constrainedWidth
 attr layout_constraintBaseline_creator
@@ -770,6 +785,9 @@ attr layout_constraintWidth_percent
 attr layout_dodgeInsetEdges
 attr layout_editor_absoluteX
 attr layout_editor_absoluteY
+attr layout_flexBasisPercent
+attr layout_flexGrow
+attr layout_flexShrink
 attr layout_goneMarginBaseline
 attr layout_goneMarginBottom
 attr layout_goneMarginEnd
@@ -777,13 +795,23 @@ attr layout_goneMarginLeft
 attr layout_goneMarginRight
 attr layout_goneMarginStart
 attr layout_goneMarginTop
+attr layout_gravity
 attr layout_insetEdge
 attr layout_keyline
 attr layout_marginBaseline
+attr layout_maxHeight
+attr layout_maxWidth
+attr layout_minHeight
+attr layout_minWidth
 attr layout_optimizationLevel
+attr layout_order
+attr layout_row
+attr layout_rowSpan
+attr layout_rowWeight
 attr layout_scrollEffect
 attr layout_scrollFlags
 attr layout_scrollInterpolator
+attr layout_wrapBefore
 attr layout_wrapBehaviorInParent
 attr liftOnScroll
 attr liftOnScrollColor
@@ -872,6 +900,7 @@ attr maxButtonHeight
 attr maxCharacterCount
 attr maxHeight
 attr maxImageSize
+attr maxLine
 attr maxLines
 attr maxNumber
 attr maxVelocity
@@ -958,6 +987,7 @@ attr onPositiveCross
 attr onShow
 attr onStateTransition
 attr onTouchUp
+attr orientation
 attr overlapAnchor
 attr overlay
 attr paddingBottomNoButtons
@@ -1027,6 +1057,8 @@ attr rippleColor
 attr rotationCenterId
 attr round
 attr roundPercent
+attr rowCount
+attr rowOrderPreserved
 attr saturation
 attr scaleFromTextSize
 attr scopeUris
@@ -1059,6 +1091,9 @@ attr shouldRemoveExpandedCorners
 attr showAnimationBehavior
 attr showAsAction
 attr showDelay
+attr showDivider
+attr showDividerHorizontal
+attr showDividerVertical
 attr showDividers
 attr showMotionSpec
 attr showPaths
@@ -1316,6 +1351,7 @@ attr uiZoomControls
 attr uiZoomGestures
 attr upDuration
 attr useCompatPadding
+attr useDefaultMargins
 attr useDrawerArrowDrawable
 attr useMaterialThemeColors
 attr useViewLifecycle
@@ -2241,6 +2277,7 @@ dimen compat_control_corner_material
 dimen compat_notification_large_icon_max_height
 dimen compat_notification_large_icon_max_width
 dimen def_drawer_elevation
+dimen default_gap
 dimen design_appbar_elevation
 dimen design_bottom_navigation_active_item_max_width
 dimen design_bottom_navigation_active_item_min_width
@@ -3064,6 +3101,8 @@ drawable design_password_eye
 drawable design_snackbar_background
 drawable googleg_disabled_color_18
 drawable googleg_standard_color_18
+drawable ic_add_photo
+drawable ic_arrow_back
 drawable ic_arrow_back_black_24
 drawable ic_back
 drawable ic_call_answer
@@ -3072,6 +3111,7 @@ drawable ic_call_answer_video
 drawable ic_call_answer_video_low
 drawable ic_call_decline
 drawable ic_call_decline_low
+drawable ic_chat
 drawable ic_clear_black_24
 drawable ic_clock_black_24dp
 drawable ic_close
@@ -3082,6 +3122,7 @@ drawable ic_launcher_background
 drawable ic_m3_chip_check
 drawable ic_m3_chip_checked_circle
 drawable ic_m3_chip_close
+drawable ic_matches
 drawable ic_mtrl_checked_circle
 drawable ic_mtrl_chip_checked_black
 drawable ic_mtrl_chip_checked_circle
@@ -3089,6 +3130,7 @@ drawable ic_mtrl_chip_close_circle
 drawable ic_my_location
 drawable ic_notifications
 drawable ic_person
+drawable ic_profile
 drawable ic_search_black_24
 drawable ic_send
 drawable ic_settings
@@ -3242,6 +3284,8 @@ id add
 id adjust_height
 id adjust_width
 id alertTitle
+id alignBounds
+id alignMargins
 id aligned
 id all
 id allStates
@@ -3264,6 +3308,7 @@ id beginning
 id bestChoice
 id blocking
 id bottom
+id bottomNavigation
 id bounce
 id bounceBoth
 id bounceEnd
@@ -3274,7 +3319,6 @@ id browser_actions_menu_item_text
 id browser_actions_menu_items
 id browser_actions_menu_view
 id btnBack
-id btnContinue
 id btnContinueGoogle
 id btnContinuePhone
 id btnDislike
@@ -3285,6 +3329,9 @@ id btnLocateMe
 id btnLogin
 id btnLogout
 id btnNotifications
+id btnSaveContinue
+id btnSaveCore
+id btnSaveInterests
 id btnSend
 id btnSendOtp
 id btnSettings
@@ -3298,6 +3345,9 @@ id callMeasure
 id cancel_button
 id cardProfile
 id carryVelocity
+id cbFriends
+id cbLongTerm
+id cbShortTerm
 id center
 id centerCrop
 id centerInside
@@ -3316,6 +3366,8 @@ id clip_vertical
 id clockwise
 id closest
 id collapseActionView
+id column
+id column_reverse
 id compress
 id confirm_button
 id constraint
@@ -3375,20 +3427,21 @@ id end
 id endToStart
 id enterAlways
 id enterAlwaysCollapsed
-id etAgePreference
+id etAge
 id etBio
 id etConfirmPassword
-id etDistancePreference
+id etEducation
 id etEmail
-id etInterests
+id etFriends
+id etFullName
+id etLifeGoal
+id etLocation
 id etMessage
 id etName
 id etOtp
 id etPassword
 id etPhoneNumber
-id etPrompt1
-id etPrompt2
-id etPrompt3
+id etWeekend
 id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu
@@ -3403,8 +3456,11 @@ id fitStart
 id fitToContents
 id fitXY
 id fixed
+id flex_end
+id flex_start
 id flip
 id floating
+id flowHobbies
 id follow_system
 id forever
 id fragment_container_view_tag
@@ -3416,6 +3472,7 @@ id glide_custom_view_target_tag
 id gone
 id graph
 id graph_wrap
+id gridPictures
 id group_divider
 id grouping
 id groups
@@ -3425,6 +3482,7 @@ id hideable
 id home
 id homeAsUp
 id honorRequest
+id horizontal
 id horizontal_only
 id hybrid
 id icon
@@ -3434,6 +3492,12 @@ id ifRoom
 id ignore
 id ignoreRequest
 id image
+id img1
+id img2
+id img3
+id img4
+id img5
+id img6
 id imgLogo
 id imgMatch
 id imgProfile
@@ -3459,6 +3523,7 @@ id linear
 id listMode
 id list_item
 id loginRow
+id lookingForOptions
 id lvMessages
 id lvNotifications
 id m3_side_sheet
@@ -3523,6 +3588,12 @@ id mtrl_picker_text_input_range_start
 id mtrl_picker_title_text
 id mtrl_view_tag_bottom_padding
 id multiply
+id nav_chat
+id nav_location
+id nav_matches
+id nav_notifications
+id nav_profile
+id nav_settings
 id navigation_bar_item_active_indicator_view
 id navigation_bar_item_icon_container
 id navigation_bar_item_icon_view
@@ -3541,6 +3612,7 @@ id north
 id notification_background
 id notification_main_column
 id notification_main_column_container
+id nowrap
 id off
 id on
 id onInterceptTouchReturnSwipe
@@ -3572,7 +3644,7 @@ id path
 id pathRelative
 id peekHeight
 id percent
-id photosContainer
+id photoContainer
 id pin
 id position
 id postLayout
@@ -3582,20 +3654,29 @@ id progress_circular
 id progress_horizontal
 id radio
 id ratio
+id rbAsexual
+id rbBisexual
 id rbFemale
+id rbGay
+id rbLesbian
 id rbMale
 id rbOther
+id rbStraight
+id rbThey
 id rectangles
 id report_drawn
 id reverseSawtooth
 id rgGender
+id rgOrientation
 id right
 id rightToLeft
 id right_icon
 id right_side
 id root
 id rounded
+id row
 id row_index_key
+id row_reverse
 id satellite
 id save_non_transition_alpha
 id save_overlay_view
@@ -3637,6 +3718,9 @@ id snap
 id snapMargins
 id socialRow
 id south
+id space_around
+id space_between
+id space_evenly
 id spacer
 id special_effects_controller_view_tag
 id spline
@@ -3678,6 +3762,21 @@ id tag_transition_group
 id tag_unhandled_key_event_manager
 id tag_unhandled_key_listeners
 id tag_window_insets_animation_callback
+id tbArt
+id tbCooking
+id tbDancing
+id tbGaming
+id tbHiking
+id tbMovies
+id tbMusic
+id tbPhotography
+id tbReading
+id tbRoadTrips
+id tbShopping
+id tbSports
+id tbTravel
+id tbVolunteering
+id tbWriting
 id terrain
 id text
 id text2
@@ -3712,15 +3811,22 @@ id transition_position
 id transition_scene_layoutid_cache
 id transition_transform
 id triangle
-id tvAddPhoto
 id tvAlready
 id tvAppName
+id tvBio
+id tvGender
+id tvInterestsLifestyle
+id tvLocation
 id tvLogin
+id tvLookingFor
 id tvMatchBio
 id tvMatchName
 id tvMatchNameAge
 id tvMessage
 id tvNameAge
+id tvOrientation
+id tvPreferences
+id tvPrompts
 id tvSignUp
 id tvSubtitle
 id tvTerms
@@ -3731,6 +3837,7 @@ id uniform
 id unlabeled
 id up
 id useLogo
+id vertical
 id vertical_only
 id view_offset_helper
 id view_transition
@@ -3748,6 +3855,7 @@ id withinBounds
 id wrap
 id wrap_content
 id wrap_content_constrained
+id wrap_reverse
 id x_left
 id x_right
 integer abc_config_activityDefaultDur
@@ -3865,6 +3973,7 @@ layout abc_search_dropdown_item_icons_2line
 layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
+layout activity_interests
 layout activity_locations_map
 layout activity_login
 layout activity_match_browsing
@@ -3872,6 +3981,7 @@ layout activity_messaging
 layout activity_notifications_settings
 layout activity_phone_auth
 layout activity_profile_setup
+layout activity_profile_view
 layout activity_welcome_signup
 layout browser_actions_context_menu_page
 layout browser_actions_context_menu_row
@@ -3956,6 +4066,7 @@ layout select_dialog_item_material
 layout select_dialog_multichoice_material
 layout select_dialog_singlechoice_material
 layout support_simple_spinner_dropdown_item
+menu bottom_navigation_menu
 mipmap ic_launcher
 mipmap ic_launcher_background
 mipmap ic_launcher_foreground
@@ -5329,6 +5440,8 @@ styleable DrawerArrowToggle arrowHeadLength arrowShaftLength barLength color dra
 styleable DrawerLayout elevation
 styleable ExtendedFloatingActionButton collapsedSize elevation extendMotionSpec extendStrategy hideMotionSpec showMotionSpec shrinkMotionSpec
 styleable ExtendedFloatingActionButton_Behavior_Layout behavior_autoHide behavior_autoShrink
+styleable FlexboxLayout alignContent alignItems dividerDrawable dividerDrawableHorizontal dividerDrawableVertical flexDirection flexWrap justifyContent maxLine showDivider showDividerHorizontal showDividerVertical
+styleable FlexboxLayout_Layout layout_alignSelf layout_flexBasisPercent layout_flexGrow layout_flexShrink layout_maxHeight layout_maxWidth layout_minHeight layout_minWidth layout_order layout_wrapBefore
 styleable FloatingActionButton android_enabled backgroundTint backgroundTintMode borderWidth elevation ensureMinTouchTargetSize fabCustomSize fabSize hideMotionSpec hoveredFocusedTranslationZ maxImageSize pressedTranslationZ rippleColor shapeAppearance shapeAppearanceOverlay showMotionSpec useCompatPadding
 styleable FloatingActionButton_Behavior_Layout behavior_autoHide
 styleable FlowLayout itemSpacing lineSpacing
@@ -5339,6 +5452,8 @@ styleable Fragment android_name android_id android_tag
 styleable FragmentContainerView android_name android_tag
 styleable GradientColor android_startColor android_endColor android_type android_centerX android_centerY android_gradientRadius android_tileMode android_centerColor android_startX android_startY android_endX android_endY
 styleable GradientColorItem android_color android_offset
+styleable GridLayout alignmentMode columnCount columnOrderPreserved orientation rowCount rowOrderPreserved useDefaultMargins
+styleable GridLayout_Layout android_layout_width android_layout_height android_layout_margin android_layout_marginLeft android_layout_marginTop android_layout_marginRight android_layout_marginBottom layout_column layout_columnSpan layout_columnWeight layout_gravity layout_row layout_rowSpan layout_rowWeight
 styleable ImageFilterView altSrc blendSrc brightness contrast crossfade imagePanX imagePanY imageRotate imageZoom overlay round roundPercent saturation warmth
 styleable Insets marginLeftSystemWindowInsets marginRightSystemWindowInsets marginTopSystemWindowInsets paddingBottomSystemWindowInsets paddingLeftSystemWindowInsets paddingRightSystemWindowInsets paddingStartSystemWindowInsets paddingTopSystemWindowInsets
 styleable KeyAttribute android_alpha android_transformPivotX android_transformPivotY android_translationX android_translationY android_scaleX android_scaleY android_rotation android_rotationX android_rotationY android_translationZ android_elevation curveFit framePosition motionProgress motionTarget transformPivotTarget transitionEasing transitionPathRotate

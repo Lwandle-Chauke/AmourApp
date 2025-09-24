@@ -4,9 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 /**
- * UserProfile entity for Room database.
+ * UserProfile entity for Room database and Firebase sync.
  * Stores bio, prompts, interests, and preferences for profile setup.
- * Primary key is email, as each user has one profile.
+ * Primary key = email (unique link to User).
  */
 @Entity(tableName = "user_profiles")
 data class UserProfile(
@@ -19,4 +19,18 @@ data class UserProfile(
     val interests: String,            // comma-separated interests
     val agePreference: String,
     val distancePreference: String
-)
+) {
+    fun toMap(): Map<String, Any?> {
+        return mapOf(
+            "email" to email,
+            "bio" to bio,
+            "gender" to gender,
+            "prompt1" to prompt1,
+            "prompt2" to prompt2,
+            "prompt3" to prompt3,
+            "interests" to interests,
+            "agePreference" to agePreference,
+            "distancePreference" to distancePreference
+        )
+    }
+}

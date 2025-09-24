@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.datingapp.amour.app-mergeDebugResources-46:/values-bs/values-bs.xml",
+            "outputFile": "com.datingapp.amour.app-mergeDebugResources-43:/values-bs/values-bs.xml",
             "map": [
                 {
                     "source": "C:\\Users\\lab_services_student\\.gradle\\caches\\8.10.2\\transforms\\7dcdb856f585f0892a0dd252808384d3\\transformed\\jetified-play-services-base-18.5.0\\res\\values-bs\\values.xml",

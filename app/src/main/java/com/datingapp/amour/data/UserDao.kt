@@ -12,7 +12,7 @@ import androidx.room.Query
 @Dao
 interface UserDao {
 
-    // Insert a user; replace if conflict occurs (same primary key)
+    // Insert or update user locally
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user: User)
 
@@ -20,7 +20,5 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
     suspend fun getUserByEmail(email: String): User?
 
-    // Get a user by phone number
-    @Query("SELECT * FROM users WHERE phone = :phone LIMIT 1")
-    suspend fun getUserByPhone(phone: String): User?
+
 }

@@ -13,6 +13,7 @@ import androidx.room.util.DBUtil;
 import androidx.sqlite.db.SupportSQLiteStatement;
 import java.lang.Class;
 import java.lang.Exception;
+import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -37,33 +38,63 @@ public final class UserDao_Impl implements UserDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR REPLACE INTO `users` (`id`,`name`,`email`,`phone`,`passwordHash`) VALUES (nullif(?, 0),?,?,?,?)";
+        return "INSERT OR REPLACE INTO `users` (`email`,`name`,`phone`,`passwordHash`,`age`,`gender`,`orientation`,`location`,`profileImageUrl`,`imageUrls`,`timestamp`) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
       }
 
       @Override
       protected void bind(@NonNull final SupportSQLiteStatement statement,
           @NonNull final User entity) {
-        statement.bindLong(1, entity.getId());
+        if (entity.getEmail() == null) {
+          statement.bindNull(1);
+        } else {
+          statement.bindString(1, entity.getEmail());
+        }
         if (entity.getName() == null) {
           statement.bindNull(2);
         } else {
           statement.bindString(2, entity.getName());
         }
-        if (entity.getEmail() == null) {
+        if (entity.getPhone() == null) {
           statement.bindNull(3);
         } else {
-          statement.bindString(3, entity.getEmail());
-        }
-        if (entity.getPhone() == null) {
-          statement.bindNull(4);
-        } else {
-          statement.bindString(4, entity.getPhone());
+          statement.bindString(3, entity.getPhone());
         }
         if (entity.getPasswordHash() == null) {
+          statement.bindNull(4);
+        } else {
+          statement.bindString(4, entity.getPasswordHash());
+        }
+        if (entity.getAge() == null) {
           statement.bindNull(5);
         } else {
-          statement.bindString(5, entity.getPasswordHash());
+          statement.bindLong(5, entity.getAge());
         }
+        if (entity.getGender() == null) {
+          statement.bindNull(6);
+        } else {
+          statement.bindString(6, entity.getGender());
+        }
+        if (entity.getOrientation() == null) {
+          statement.bindNull(7);
+        } else {
+          statement.bindString(7, entity.getOrientation());
+        }
+        if (entity.getLocation() == null) {
+          statement.bindNull(8);
+        } else {
+          statement.bindString(8, entity.getLocation());
+        }
+        if (entity.getProfileImageUrl() == null) {
+          statement.bindNull(9);
+        } else {
+          statement.bindString(9, entity.getProfileImageUrl());
+        }
+        if (entity.getImageUrls() == null) {
+          statement.bindNull(10);
+        } else {
+          statement.bindString(10, entity.getImageUrls());
+        }
+        statement.bindLong(11, entity.getTimestamp());
       }
     };
   }
@@ -103,26 +134,30 @@ public final class UserDao_Impl implements UserDao {
       public User call() throws Exception {
         final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
         try {
-          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
-          final int _cursorIndexOfName = CursorUtil.getColumnIndexOrThrow(_cursor, "name");
           final int _cursorIndexOfEmail = CursorUtil.getColumnIndexOrThrow(_cursor, "email");
+          final int _cursorIndexOfName = CursorUtil.getColumnIndexOrThrow(_cursor, "name");
           final int _cursorIndexOfPhone = CursorUtil.getColumnIndexOrThrow(_cursor, "phone");
           final int _cursorIndexOfPasswordHash = CursorUtil.getColumnIndexOrThrow(_cursor, "passwordHash");
+          final int _cursorIndexOfAge = CursorUtil.getColumnIndexOrThrow(_cursor, "age");
+          final int _cursorIndexOfGender = CursorUtil.getColumnIndexOrThrow(_cursor, "gender");
+          final int _cursorIndexOfOrientation = CursorUtil.getColumnIndexOrThrow(_cursor, "orientation");
+          final int _cursorIndexOfLocation = CursorUtil.getColumnIndexOrThrow(_cursor, "location");
+          final int _cursorIndexOfProfileImageUrl = CursorUtil.getColumnIndexOrThrow(_cursor, "profileImageUrl");
+          final int _cursorIndexOfImageUrls = CursorUtil.getColumnIndexOrThrow(_cursor, "imageUrls");
+          final int _cursorIndexOfTimestamp = CursorUtil.getColumnIndexOrThrow(_cursor, "timestamp");
           final User _result;
           if (_cursor.moveToFirst()) {
-            final int _tmpId;
-            _tmpId = _cursor.getInt(_cursorIndexOfId);
-            final String _tmpName;
-            if (_cursor.isNull(_cursorIndexOfName)) {
-              _tmpName = null;
-            } else {
-              _tmpName = _cursor.getString(_cursorIndexOfName);
-            }
             final String _tmpEmail;
             if (_cursor.isNull(_cursorIndexOfEmail)) {
               _tmpEmail = null;
             } else {
               _tmpEmail = _cursor.getString(_cursorIndexOfEmail);
+            }
+            final String _tmpName;
+            if (_cursor.isNull(_cursorIndexOfName)) {
+              _tmpName = null;
+            } else {
+              _tmpName = _cursor.getString(_cursorIndexOfName);
             }
             final String _tmpPhone;
             if (_cursor.isNull(_cursorIndexOfPhone)) {
@@ -136,70 +171,45 @@ public final class UserDao_Impl implements UserDao {
             } else {
               _tmpPasswordHash = _cursor.getString(_cursorIndexOfPasswordHash);
             }
-            _result = new User(_tmpId,_tmpName,_tmpEmail,_tmpPhone,_tmpPasswordHash);
-          } else {
-            _result = null;
-          }
-          return _result;
-        } finally {
-          _cursor.close();
-          _statement.release();
-        }
-      }
-    }, $completion);
-  }
-
-  @Override
-  public Object getUserByPhone(final String phone, final Continuation<? super User> $completion) {
-    final String _sql = "SELECT * FROM users WHERE phone = ? LIMIT 1";
-    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
-    int _argIndex = 1;
-    if (phone == null) {
-      _statement.bindNull(_argIndex);
-    } else {
-      _statement.bindString(_argIndex, phone);
-    }
-    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
-    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<User>() {
-      @Override
-      @Nullable
-      public User call() throws Exception {
-        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
-        try {
-          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
-          final int _cursorIndexOfName = CursorUtil.getColumnIndexOrThrow(_cursor, "name");
-          final int _cursorIndexOfEmail = CursorUtil.getColumnIndexOrThrow(_cursor, "email");
-          final int _cursorIndexOfPhone = CursorUtil.getColumnIndexOrThrow(_cursor, "phone");
-          final int _cursorIndexOfPasswordHash = CursorUtil.getColumnIndexOrThrow(_cursor, "passwordHash");
-          final User _result;
-          if (_cursor.moveToFirst()) {
-            final int _tmpId;
-            _tmpId = _cursor.getInt(_cursorIndexOfId);
-            final String _tmpName;
-            if (_cursor.isNull(_cursorIndexOfName)) {
-              _tmpName = null;
+            final Integer _tmpAge;
+            if (_cursor.isNull(_cursorIndexOfAge)) {
+              _tmpAge = null;
             } else {
-              _tmpName = _cursor.getString(_cursorIndexOfName);
+              _tmpAge = _cursor.getInt(_cursorIndexOfAge);
             }
-            final String _tmpEmail;
-            if (_cursor.isNull(_cursorIndexOfEmail)) {
-              _tmpEmail = null;
+            final String _tmpGender;
+            if (_cursor.isNull(_cursorIndexOfGender)) {
+              _tmpGender = null;
             } else {
-              _tmpEmail = _cursor.getString(_cursorIndexOfEmail);
+              _tmpGender = _cursor.getString(_cursorIndexOfGender);
             }
-            final String _tmpPhone;
-            if (_cursor.isNull(_cursorIndexOfPhone)) {
-              _tmpPhone = null;
+            final String _tmpOrientation;
+            if (_cursor.isNull(_cursorIndexOfOrientation)) {
+              _tmpOrientation = null;
             } else {
-              _tmpPhone = _cursor.getString(_cursorIndexOfPhone);
+              _tmpOrientation = _cursor.getString(_cursorIndexOfOrientation);
             }
-            final String _tmpPasswordHash;
-            if (_cursor.isNull(_cursorIndexOfPasswordHash)) {
-              _tmpPasswordHash = null;
+            final String _tmpLocation;
+            if (_cursor.isNull(_cursorIndexOfLocation)) {
+              _tmpLocation = null;
             } else {
-              _tmpPasswordHash = _cursor.getString(_cursorIndexOfPasswordHash);
+              _tmpLocation = _cursor.getString(_cursorIndexOfLocation);
             }
-            _result = new User(_tmpId,_tmpName,_tmpEmail,_tmpPhone,_tmpPasswordHash);
+            final String _tmpProfileImageUrl;
+            if (_cursor.isNull(_cursorIndexOfProfileImageUrl)) {
+              _tmpProfileImageUrl = null;
+            } else {
+              _tmpProfileImageUrl = _cursor.getString(_cursorIndexOfProfileImageUrl);
+            }
+            final String _tmpImageUrls;
+            if (_cursor.isNull(_cursorIndexOfImageUrls)) {
+              _tmpImageUrls = null;
+            } else {
+              _tmpImageUrls = _cursor.getString(_cursorIndexOfImageUrls);
+            }
+            final long _tmpTimestamp;
+            _tmpTimestamp = _cursor.getLong(_cursorIndexOfTimestamp);
+            _result = new User(_tmpEmail,_tmpName,_tmpPhone,_tmpPasswordHash,_tmpAge,_tmpGender,_tmpOrientation,_tmpLocation,_tmpProfileImageUrl,_tmpImageUrls,_tmpTimestamp);
           } else {
             _result = null;
           }

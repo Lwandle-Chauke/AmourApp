@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.datingapp.amour.app-mergeDebugResources-46:/values-kn/values-kn.xml",
+            "outputFile": "com.datingapp.amour.app-mergeDebugResources-43:/values-kn/values-kn.xml",
             "map": [
                 {
                     "source": "C:\\Users\\lab_services_student\\.gradle\\caches\\8.10.2\\transforms\\8df13e801bee3936fce72fdf6589984c\\transformed\\browser-1.4.0\\res\\values-kn\\values-kn.xml",
