@@ -1,0 +1,3 @@
+com.datingapp.amour.test
+style WhiteBackgroundDialogTheme
+style WhiteBackgroundTheme

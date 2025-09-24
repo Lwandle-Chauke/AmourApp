@@ -1,0 +1,5 @@
+com.datingapp.amour.test.app-jetified-core-1.6.1-0 C:\Users\lab_services_student\.gradle\caches\8.10.2\transforms\9d091fa43baee1329dfad5096cf7bdf3\transformed\jetified-core-1.6.1\res
+com.datingapp.amour.test.app-androidTest-1 C:\Users\lab_services_student\AndroidStudioProjects\AmourApp\app\build\generated\res\resValues\androidTest\debug
+com.datingapp.amour.test.app-mergeDebugAndroidTestResources-2 C:\Users\lab_services_student\AndroidStudioProjects\AmourApp\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.datingapp.amour.test.app-mergeDebugAndroidTestResources-3 C:\Users\lab_services_student\AndroidStudioProjects\AmourApp\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.datingapp.amour.test.app-debugAndroidTest-4 C:\Users\lab_services_student\AndroidStudioProjects\AmourApp\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources

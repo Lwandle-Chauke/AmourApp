@@ -44,6 +44,7 @@
         android:extractNativeLibs="false"
         android:icon="@mipmap/ic_launcher"
         android:label="Amour"
+        android:testOnly="true"
         android:theme="@style/Theme.Amour" >
 
         <!-- Google Maps API Key -->
