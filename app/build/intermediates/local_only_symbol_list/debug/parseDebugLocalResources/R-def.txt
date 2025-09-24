@@ -19,6 +19,7 @@ drawable ic_back
 drawable ic_chat
 drawable ic_close
 drawable ic_heart
+drawable ic_image_placeholder
 drawable ic_launcher
 drawable ic_launcher_background
 drawable ic_matches
@@ -26,6 +27,7 @@ drawable ic_my_location
 drawable ic_notifications
 drawable ic_person
 drawable ic_profile
+drawable ic_profile_placeholder
 drawable ic_send
 drawable ic_settings
 id actionButtons

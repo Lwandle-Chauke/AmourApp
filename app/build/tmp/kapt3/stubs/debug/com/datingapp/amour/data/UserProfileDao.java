@@ -7,12 +7,18 @@ package com.datingapp.amour.data;
 @androidx.room.Dao()
 public abstract interface UserProfileDao {
     
+    /**
+     * Insert or update profile.
+     */
     @androidx.room.Insert(onConflict = 1)
     @org.jetbrains.annotations.Nullable()
     public abstract java.lang.Object insert(@org.jetbrains.annotations.NotNull()
     com.datingapp.amour.data.UserProfile profile, @org.jetbrains.annotations.NotNull()
     kotlin.coroutines.Continuation<? super kotlin.Unit> $completion);
     
+    /**
+     * Retrieve profile by email.
+     */
     @androidx.room.Query(value = "SELECT * FROM user_profiles WHERE email = :email LIMIT 1")
     @org.jetbrains.annotations.Nullable()
     public abstract java.lang.Object getProfile(@org.jetbrains.annotations.NotNull()

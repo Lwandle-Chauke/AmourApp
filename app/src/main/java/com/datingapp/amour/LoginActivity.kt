@@ -7,140 +7,165 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.datingapp.amour.data.AppDatabase
+import com.datingapp.amour.data.User
 import com.datingapp.amour.utils.Utils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+/**
+ * Activity for user authentication/login
+ * Handles user login and redirects to appropriate activity based on profile completion
+ */
 class LoginActivity : AppCompatActivity() {
 
+    // UI component declarations
     private lateinit var etEmail: EditText
     private lateinit var etPassword: EditText
     private lateinit var btnLogin: Button
-    private lateinit var btnGoogle: Button
-    private lateinit var btnPhone: Button
     private lateinit var tvSignUp: TextView
 
+    // Database reference
     private lateinit var db: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        bindViews()
-        db = AppDatabase.getDatabase(this)
+        // Initialize UI components
+        initializeViews()
 
-        // Set click listeners with error handling
-        btnLogin.setOnClickListener { safeCall { loginUser() } }
-        btnGoogle.setOnClickListener { safeCall { openProfileSetup() } }
-        btnPhone.setOnClickListener { safeCall { openPhoneAuth() } }
-        tvSignUp.setOnClickListener { safeCall { openSignUp() } }
+        // Setup click listeners
+        setupClickListeners()
     }
 
-    private fun bindViews() {
+    /**
+     * Bind XML views to Kotlin variables
+     */
+    private fun initializeViews() {
         etEmail = findViewById(R.id.etEmail)
         etPassword = findViewById(R.id.etPassword)
         btnLogin = findViewById(R.id.btnLogin)
-        btnGoogle = findViewById(R.id.btnGoogle)
-        btnPhone = findViewById(R.id.btnContinuePhone)
         tvSignUp = findViewById(R.id.tvSignUp)
+
+        // Initialize Room database
+        db = AppDatabase.getDatabase(this)
     }
 
-    /** Safe wrapper to prevent app crashes from unexpected exceptions */
-    private fun safeCall(block: () -> Unit) {
-        try {
-            block()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+    /**
+     * Setup button click listeners
+     */
+    private fun setupClickListeners() {
+        btnLogin.setOnClickListener { loginUser() }
+        tvSignUp.setOnClickListener {
+            // Navigate to registration screen
+            startActivity(Intent(this, WelcomeSignupActivity::class.java))
         }
     }
 
-    /** Authenticate user and navigate to appropriate screen based on profile completion */
+    /**
+     * Handle user authentication process
+     * Validates credentials and navigates to appropriate activity
+     */
     private fun loginUser() {
+        // Get input values
         val email = etEmail.text.toString().trim()
         val password = etPassword.text.toString()
 
-        // Input validation
-        when {
-            email.isEmpty() -> {
-                etEmail.error = "Enter email";
-                etEmail.requestFocus();
-                return
-            }
-            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                etEmail.error = "Enter valid email";
-                etEmail.requestFocus();
-                return
-            }
-            password.isEmpty() -> {
-                etPassword.error = "Enter password";
-                etPassword.requestFocus();
-                return
-            }
+        // Validate input fields
+        if (!validateInput(email, password)) {
+            return // Stop if validation fails
         }
 
+        // Hash password for comparison
         val hashedPassword = Utils.hashPassword(password)
 
-        // Perform login in background thread to avoid blocking UI
+        // Use lifecycleScope for coroutine that follows activity lifecycle
         lifecycleScope.launchWhenStarted {
-            try {
-                val user = withContext(Dispatchers.IO) {
-                    db.userDao().getUserByEmail(email)
-                }
+            // Retrieve user from database on background thread
+            val user = withContext(Dispatchers.IO) {
+                db.userDao().getUserByEmail(email)
+            }
 
-                if (user != null && user.passwordHash == hashedPassword) {
-                    Toast.makeText(this@LoginActivity, "Login successful!", Toast.LENGTH_SHORT).show()
+            // Check if user exists and password matches
+            if (user != null && user.passwordHash == hashedPassword) {
+                // Login successful
+                Toast.makeText(
+                    this@LoginActivity,
+                    "Login successful!",
+                    Toast.LENGTH_SHORT
+                ).show()
 
-                    // Check if user profile is complete to determine navigation
-                    if (isProfileComplete(user)) {
-                        // Profile complete - go directly to main app (ProfileView)
-                        openProfileView(email)
-                    } else {
-                        // Profile incomplete - redirect to profile setup
-                        openProfileSetup(email)
-                    }
+                // Navigate based on profile completion status
+                if (isProfileComplete(user)) {
+                    openProfileView(email) // Profile is complete
                 } else {
-                    Toast.makeText(this@LoginActivity, "Invalid email or password", Toast.LENGTH_SHORT).show()
+                    openProfileSetup(email) // Profile needs setup
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Toast.makeText(this@LoginActivity, "Login error: ${e.message}", Toast.LENGTH_LONG).show()
+            } else {
+                // Invalid credentials
+                Toast.makeText(
+                    this@LoginActivity,
+                    "Invalid email or password",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
 
-    /** Determine if user has completed their profile setup */
-    private fun isProfileComplete(user: com.datingapp.amour.data.User): Boolean {
+    /**
+     * Validate email and password input
+     * @return true if valid, false otherwise
+     */
+    private fun validateInput(email: String, password: String): Boolean {
+        return when {
+            email.isEmpty() -> {
+                etEmail.error = "Please enter your email address"
+                etEmail.requestFocus()
+                false
+            }
+            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                etEmail.error = "Please enter a valid email address"
+                etEmail.requestFocus()
+                false
+            }
+            password.isEmpty() -> {
+                etPassword.error = "Please enter your password"
+                etPassword.requestFocus()
+                false
+            }
+            else -> true // All validations passed
+        }
+    }
+
+    /**
+     * Check if user profile is complete
+     * @return true if all required profile fields are filled
+     */
+    private fun isProfileComplete(user: User): Boolean {
         return user.age != null &&
-                user.gender != null &&
-                user.orientation != null &&
-                user.location != null &&
-                user.profileImageUrl != null
+                !user.gender.isNullOrEmpty() &&
+                !user.orientation.isNullOrEmpty() &&
+                !user.location.isNullOrEmpty() &&
+                !user.profileImageUrl.isNullOrEmpty()
     }
 
-    /** Navigate to ProfileSetupActivity for incomplete profiles */
-    private fun openProfileSetup(email: String? = null) {
+    /**
+     * Navigate to ProfileSetupActivity for incomplete profiles
+     */
+    private fun openProfileSetup(email: String) {
         val intent = Intent(this, ProfileSetupActivity::class.java)
-        email?.let { intent.putExtra("email", it) }
+        intent.putExtra("email", email)
         startActivity(intent)
-        finish() // Close login activity to prevent back navigation
+        finish() // Close login activity
     }
 
-    /** Navigate to ProfileViewActivity for complete profiles */
-    private fun openProfileView(email: String? = null) {
+    /**
+     * Navigate to ProfileViewActivity for complete profiles
+     */
+    private fun openProfileView(email: String) {
         val intent = Intent(this, ProfileViewActivity::class.java)
-        email?.let { intent.putExtra("email", it) }
+        intent.putExtra("email", email)
         startActivity(intent)
-        finish() // Close login activity to prevent back navigation
-    }
-
-    private fun openPhoneAuth() {
-        startActivity(Intent(this, PhoneAuthActivity::class.java))
-        finish()
-    }
-
-    private fun openSignUp() {
-        startActivity(Intent(this, WelcomeSignupActivity::class.java))
-        finish()
+        finish() // Close login activity
     }
 }

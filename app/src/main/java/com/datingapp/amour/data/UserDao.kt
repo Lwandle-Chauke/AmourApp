@@ -7,18 +7,20 @@ import androidx.room.Query
 
 /**
  * DAO interface for User entity operations.
- * Provides database access functions for User table.
  */
 @Dao
 interface UserDao {
 
-    // Insert or update user locally
+    /**
+     * Insert or update a user in local Room database.
+     * If a conflict (same email) occurs, replace the existing record.
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user: User)
 
-    // Get a user by email
+    /**
+     * Retrieve a user by email from the local database.
+     */
     @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
     suspend fun getUserByEmail(email: String): User?
-
-
 }

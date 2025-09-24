@@ -38,7 +38,7 @@ public final class UserDao_Impl implements UserDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR REPLACE INTO `users` (`email`,`name`,`phone`,`passwordHash`,`age`,`gender`,`orientation`,`location`,`profileImageUrl`,`imageUrls`,`timestamp`) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        return "INSERT OR REPLACE INTO `users` (`email`,`name`,`passwordHash`,`phone`,`age`,`gender`,`orientation`,`location`,`profileImageUrl`,`imageUrls`) VALUES (?,?,?,?,?,?,?,?,?,?)";
       }
 
       @Override
@@ -54,15 +54,15 @@ public final class UserDao_Impl implements UserDao {
         } else {
           statement.bindString(2, entity.getName());
         }
-        if (entity.getPhone() == null) {
+        if (entity.getPasswordHash() == null) {
           statement.bindNull(3);
         } else {
-          statement.bindString(3, entity.getPhone());
+          statement.bindString(3, entity.getPasswordHash());
         }
-        if (entity.getPasswordHash() == null) {
+        if (entity.getPhone() == null) {
           statement.bindNull(4);
         } else {
-          statement.bindString(4, entity.getPasswordHash());
+          statement.bindString(4, entity.getPhone());
         }
         if (entity.getAge() == null) {
           statement.bindNull(5);
@@ -94,7 +94,6 @@ public final class UserDao_Impl implements UserDao {
         } else {
           statement.bindString(10, entity.getImageUrls());
         }
-        statement.bindLong(11, entity.getTimestamp());
       }
     };
   }
@@ -136,15 +135,14 @@ public final class UserDao_Impl implements UserDao {
         try {
           final int _cursorIndexOfEmail = CursorUtil.getColumnIndexOrThrow(_cursor, "email");
           final int _cursorIndexOfName = CursorUtil.getColumnIndexOrThrow(_cursor, "name");
-          final int _cursorIndexOfPhone = CursorUtil.getColumnIndexOrThrow(_cursor, "phone");
           final int _cursorIndexOfPasswordHash = CursorUtil.getColumnIndexOrThrow(_cursor, "passwordHash");
+          final int _cursorIndexOfPhone = CursorUtil.getColumnIndexOrThrow(_cursor, "phone");
           final int _cursorIndexOfAge = CursorUtil.getColumnIndexOrThrow(_cursor, "age");
           final int _cursorIndexOfGender = CursorUtil.getColumnIndexOrThrow(_cursor, "gender");
           final int _cursorIndexOfOrientation = CursorUtil.getColumnIndexOrThrow(_cursor, "orientation");
           final int _cursorIndexOfLocation = CursorUtil.getColumnIndexOrThrow(_cursor, "location");
           final int _cursorIndexOfProfileImageUrl = CursorUtil.getColumnIndexOrThrow(_cursor, "profileImageUrl");
           final int _cursorIndexOfImageUrls = CursorUtil.getColumnIndexOrThrow(_cursor, "imageUrls");
-          final int _cursorIndexOfTimestamp = CursorUtil.getColumnIndexOrThrow(_cursor, "timestamp");
           final User _result;
           if (_cursor.moveToFirst()) {
             final String _tmpEmail;
@@ -159,17 +157,17 @@ public final class UserDao_Impl implements UserDao {
             } else {
               _tmpName = _cursor.getString(_cursorIndexOfName);
             }
-            final String _tmpPhone;
-            if (_cursor.isNull(_cursorIndexOfPhone)) {
-              _tmpPhone = null;
-            } else {
-              _tmpPhone = _cursor.getString(_cursorIndexOfPhone);
-            }
             final String _tmpPasswordHash;
             if (_cursor.isNull(_cursorIndexOfPasswordHash)) {
               _tmpPasswordHash = null;
             } else {
               _tmpPasswordHash = _cursor.getString(_cursorIndexOfPasswordHash);
+            }
+            final String _tmpPhone;
+            if (_cursor.isNull(_cursorIndexOfPhone)) {
+              _tmpPhone = null;
+            } else {
+              _tmpPhone = _cursor.getString(_cursorIndexOfPhone);
             }
             final Integer _tmpAge;
             if (_cursor.isNull(_cursorIndexOfAge)) {
@@ -207,9 +205,7 @@ public final class UserDao_Impl implements UserDao {
             } else {
               _tmpImageUrls = _cursor.getString(_cursorIndexOfImageUrls);
             }
-            final long _tmpTimestamp;
-            _tmpTimestamp = _cursor.getLong(_cursorIndexOfTimestamp);
-            _result = new User(_tmpEmail,_tmpName,_tmpPhone,_tmpPasswordHash,_tmpAge,_tmpGender,_tmpOrientation,_tmpLocation,_tmpProfileImageUrl,_tmpImageUrls,_tmpTimestamp);
+            _result = new User(_tmpEmail,_tmpName,_tmpPasswordHash,_tmpPhone,_tmpAge,_tmpGender,_tmpOrientation,_tmpLocation,_tmpProfileImageUrl,_tmpImageUrls);
           } else {
             _result = null;
           }

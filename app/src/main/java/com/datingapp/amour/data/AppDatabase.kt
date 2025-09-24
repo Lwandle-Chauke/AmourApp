@@ -7,24 +7,24 @@ import androidx.room.RoomDatabase
 
 /**
  * The Room database for the Amour app.
- * Contains two entities: User and UserProfile.
- * Version 1: initial release.
  *
- * NOTE: We are NOT disabling exportSchema.
- * This allows Room to export schema history JSON files
- * into the directory we configure in build.gradle.kts.
+ * Contains two entities:
+ * - User: core account info (email, name, age, gender, orientation, profile images)
+ * - UserProfile: profile details (bio, prompts, interests, preferences)
+ *
+ * Version 1: initial release
  */
 @Database(
     entities = [User::class, UserProfile::class],
-    version = 1,
-    exportSchema = true // 👈 explicitly enabled for schema history tracking
+    version = 2, // increment version whenever schema changes
+    exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
 
     // DAO for user-related database operations
     abstract fun userDao(): UserDao
 
-    // DAO for user profile-related operations
+    // DAO for user profile operations
     abstract fun userProfileDao(): UserProfileDao
 
     companion object {
@@ -32,18 +32,16 @@ abstract class AppDatabase : RoomDatabase() {
         private var INSTANCE: AppDatabase? = null
 
         /**
-         * Singleton pattern: ensures a single database instance across threads.
+         * Singleton pattern: ensures one database instance across threads.
          */
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "amour_database" // Database filename (amour_database.db)
+                    "amour_database" // Filename: amour_database.db
                 )
-                    // During development, recreate DB if schema changes.
-                    // In production, you’ll want proper migrations instead.
-                    .fallbackToDestructiveMigration()
+                    .fallbackToDestructiveMigration() // Rebuilds DB if schema changes (dev only)
                     .build()
 
                 INSTANCE = instance

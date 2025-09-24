@@ -1,5 +1,9 @@
 [
     {
+        "merged": "com.datingapp.amour.app-debug-45:/drawable_ic_profile_placeholder.xml.flat",
+        "source": "com.datingapp.amour.app-main-47:/drawable/ic_profile_placeholder.xml"
+    },
+    {
         "merged": "com.datingapp.amour.app-debug-45:/drawable_bg_circle_red.xml.flat",
         "source": "com.datingapp.amour.app-main-47:/drawable/bg_circle_red.xml"
     },
@@ -138,6 +142,10 @@
     {
         "merged": "com.datingapp.amour.app-debug-45:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
         "source": "com.datingapp.amour.app-main-47:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.datingapp.amour.app-debug-45:/drawable_ic_image_placeholder.xml.flat",
+        "source": "com.datingapp.amour.app-main-47:/drawable/ic_image_placeholder.xml"
     },
     {
         "merged": "com.datingapp.amour.app-debug-45:/drawable_bg_bubble_received.xml.flat",

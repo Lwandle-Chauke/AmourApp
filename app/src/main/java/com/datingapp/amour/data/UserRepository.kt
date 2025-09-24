@@ -1,144 +1,163 @@
 package com.datingapp.amour.data
 
 import android.content.Context
-import android.util.Log
-import com.google.firebase.database.*
-import kotlinx.coroutines.CoroutineScope
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 /**
- * Repository for managing user and user profile data.
- * Handles saving to BOTH Room (offline) and Firebase (online).
- * Also supports syncing Firebase → Room for keeping local data fresh.
+ * Repository pattern implementation for data management
+ * Handles synchronization between local Room database and Firebase Realtime Database
+ * Provides a clean API for data operations throughout the app
  */
 class UserRepository private constructor(context: Context) {
 
-    // Local database
-    private val db = AppDatabase.getDatabase(context)
-    private val userDao = db.userDao()
-    private val profileDao = db.userProfileDao()
+    // Local database instance (Room)
+    private val db: AppDatabase = AppDatabase.getDatabase(context)
 
-    // Firebase reference
-    private val firebaseDb: DatabaseReference = FirebaseDatabase.getInstance().reference
-
-    /**
-     * Save user to Room and Firebase.
-     */
-    fun saveUser(user: User) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                // Save to Room (offline)
-                userDao.insert(user)
-
-                // Save to Firebase (online)
-                firebaseDb.child("users")
-                    .child(user.email.replace(".", "_")) // Firebase doesn't allow "."
-                    .setValue(user.toMap())
-                    .addOnFailureListener { e ->
-                        Log.e("UserRepository", "Failed to save user to Firebase: ${e.message}")
-                    }
-
-            } catch (e: Exception) {
-                Log.e("UserRepository", "Error saving user: ${e.message}")
-            }
-        }
-    }
-
-    /**
-     * Save user profile to Room and Firebase.
-     */
-    fun saveUserProfile(profile: UserProfile) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                // Save to Room (offline)
-                profileDao.insert(profile)
-
-                // Save to Firebase (online)
-                firebaseDb.child("user_profiles")
-                    .child(profile.email.replace(".", "_"))
-                    .setValue(profile.toMap())
-                    .addOnFailureListener { e ->
-                        Log.e("UserRepository", "Failed to save profile to Firebase: ${e.message}")
-                    }
-
-            } catch (e: Exception) {
-                Log.e("UserRepository", "Error saving profile: ${e.message}")
-            }
-        }
-    }
-
-    /**
-     * Fetch user from local DB (offline-first).
-     */
-    suspend fun getUserByEmail(email: String): User? {
-        return userDao.getUserByEmail(email)
-    }
-
-    /**
-     * Fetch profile from local DB (offline-first).
-     */
-    suspend fun getProfile(email: String): UserProfile? {
-        return profileDao.getProfile(email)
-    }
-
-    /**
-     * Sync latest user data from Firebase → Room.
-     * Keeps local DB fresh when online.
-     */
-    fun syncUserFromFirebase(email: String) {
-        val safeKey = email.replace(".", "_")
-        firebaseDb.child("users").child(safeKey)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    snapshot.getValue(User::class.java)?.let { user ->
-                        CoroutineScope(Dispatchers.IO).launch {
-                            userDao.insert(user)
-                            Log.d("UserRepository", "User synced from Firebase → Room")
-                        }
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("UserRepository", "Firebase user sync cancelled: ${error.message}")
-                }
-            })
-    }
-
-    /**
-     * Sync latest user profile data from Firebase → Room.
-     */
-    fun syncProfileFromFirebase(email: String) {
-        val safeKey = email.replace(".", "_")
-        firebaseDb.child("user_profiles").child(safeKey)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    snapshot.getValue(UserProfile::class.java)?.let { profile ->
-                        CoroutineScope(Dispatchers.IO).launch {
-                            profileDao.insert(profile)
-                            Log.d("UserRepository", "Profile synced from Firebase → Room")
-                        }
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("UserRepository", "Firebase profile sync cancelled: ${error.message}")
-                }
-            })
-    }
+    // Firebase Realtime Database reference
+    private val firebaseDB = FirebaseDatabase.getInstance().reference
 
     companion object {
         @Volatile
-        private var INSTANCE: UserRepository? = null
+        private var instance: UserRepository? = null
 
         /**
-         * Singleton pattern: get repository instance.
+         * Singleton pattern: ensures single instance across the application
+         * @param context Application context
+         * @return UserRepository instance
          */
-        fun getInstance(context: Context): UserRepository {
-            return INSTANCE ?: synchronized(this) {
-                val instance = UserRepository(context)
-                INSTANCE = instance
-                instance
+        fun getInstance(context: Context): UserRepository =
+            instance ?: synchronized(this) {
+                instance ?: UserRepository(context).also { instance = it }
+            }
+    }
+
+    /** ------------------- USER ENTITY OPERATIONS ------------------- **/
+
+    /**
+     * Save user to both local (Room) and remote (Firebase) databases
+     * @param user User object to save
+     */
+    suspend fun saveUser(user: User) {
+        // Save to local database on background thread
+        withContext(Dispatchers.IO) {
+            db.userDao().insert(user)
+        }
+        // Save to Firebase
+        saveUserToFirebase(user)
+    }
+
+    /**
+     * Retrieve user from local Room database by email
+     * @param email User's email address
+     * @return User object or null if not found
+     */
+    suspend fun getUserByEmail(email: String): User? =
+        withContext(Dispatchers.IO) {
+            db.userDao().getUserByEmail(email)
+        }
+
+    /**
+     * Save user to Firebase Realtime Database
+     * @param user User object to save
+     */
+    private suspend fun saveUserToFirebase(user: User) {
+        val firebaseKey = user.email.replace(".", "_") // Firebase key format
+        firebaseDB.child("users").child(firebaseKey).setValue(user.toMap()).await()
+    }
+
+    /**
+     * Retrieve user from Firebase by email
+     * @param email User's email address
+     * @return User object or null if not found
+     */
+    private suspend fun getUserFromFirebase(email: String): User? {
+        val firebaseKey = email.replace(".", "_")
+        val snapshot = firebaseDB.child("users").child(firebaseKey).get().await()
+
+        return if (snapshot.exists()) {
+            User.fromMap(snapshot.value as Map<String, Any?>)
+        } else {
+            null
+        }
+    }
+
+    /**
+     * Synchronize user data from Firebase to local database
+     * @param email User's email address
+     */
+    suspend fun syncUserFromFirebase(email: String) {
+        val userFromFirebase = getUserFromFirebase(email)
+        userFromFirebase?.let {
+            // Update local database with Firebase data
+            withContext(Dispatchers.IO) {
+                db.userDao().insert(it)
+            }
+        }
+    }
+
+    /** ------------------- USER PROFILE OPERATIONS ------------------- **/
+
+    /**
+     * Save user profile to both local and remote databases
+     * @param profile UserProfile object to save
+     */
+    suspend fun saveUserProfile(profile: UserProfile) {
+        // Save to local database
+        withContext(Dispatchers.IO) {
+            db.userProfileDao().insert(profile)
+        }
+        // Save to Firebase
+        saveProfileToFirebase(profile)
+    }
+
+    /**
+     * Retrieve user profile from local database by email
+     * @param email User's email address
+     * @return UserProfile object or null if not found
+     */
+    suspend fun getProfile(email: String): UserProfile? =
+        withContext(Dispatchers.IO) {
+            db.userProfileDao().getProfile(email)
+        }
+
+    /**
+     * Save user profile to Firebase Realtime Database
+     * @param profile UserProfile object to save
+     */
+    private suspend fun saveProfileToFirebase(profile: UserProfile) {
+        val firebaseKey = profile.email.replace(".", "_")
+        firebaseDB.child("profiles").child(firebaseKey).setValue(profile.toMap()).await()
+    }
+
+    /**
+     * Retrieve user profile from Firebase by email
+     * @param email User's email address
+     * @return UserProfile object or null if not found
+     */
+    private suspend fun getProfileFromFirebase(email: String): UserProfile? {
+        val firebaseKey = email.replace(".", "_")
+        val snapshot = firebaseDB.child("profiles").child(firebaseKey).get().await()
+
+        return if (snapshot.exists()) {
+            snapshot.getValue(UserProfile::class.java)
+        } else {
+            null
+        }
+    }
+
+    /**
+     * Synchronize profile data from Firebase to local database
+     * @param email User's email address
+     */
+    suspend fun syncProfileFromFirebase(email: String) {
+        val profileFromFirebase = getProfileFromFirebase(email)
+        profileFromFirebase?.let {
+            // Update local database with Firebase data
+            withContext(Dispatchers.IO) {
+                db.userProfileDao().insert(it)
             }
         }
     }
