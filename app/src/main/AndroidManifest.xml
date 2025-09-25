@@ -23,7 +23,7 @@
         <!-- Add your Google Maps API Key here -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyB9cz7jLj4fHIzmpk9CvV_ck8j7cHNF-OU" />
+            android:value="YOUR_API_KEY" />
 
         <!-- Google Sign-In -->
         <meta-data
