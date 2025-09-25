@@ -3,4 +3,5 @@
     <string name="welcome_message">Welcome to Amour</string>
     <string name="find_connections">Find meaningful connections nearby</string>
     <string name="create_account">Create account</string>
+    <string name="default_web_client_id">402010089611-gp646mtivuqsq6ffbteaciphe0hvog47.apps.googleusercontent.com</string>
 </resources>

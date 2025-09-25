@@ -1498,6 +1498,7 @@ color error_color_material_dark
 color error_color_material_light
 color foreground_material_dark
 color foreground_material_light
+color gray
 color highlighted_text_material_dark
 color highlighted_text_material_light
 color m3_appbar_overlay_color
@@ -2153,6 +2154,7 @@ color mtrl_textinput_focused_box_stroke_color
 color mtrl_textinput_hovered_box_stroke_color
 color notification_action_color_filter
 color notification_icon_bg_color
+color pink
 color primary_dark_material_dark
 color primary_dark_material_light
 color primary_material_dark
@@ -2164,6 +2166,7 @@ color primary_text_disabled_material_light
 color purple_200
 color purple_500
 color purple_700
+color red
 color ripple_material_dark
 color ripple_material_light
 color secondary_text_default_material_dark
@@ -2338,6 +2341,7 @@ dimen hint_alpha_material_dark
 dimen hint_alpha_material_light
 dimen hint_pressed_alpha_material_dark
 dimen hint_pressed_alpha_material_light
+dimen image_margin
 dimen item_touch_helper_max_drag_scroll_per_frame
 dimen item_touch_helper_swipe_escape_max_velocity
 dimen item_touch_helper_swipe_escape_velocity
@@ -2972,6 +2976,7 @@ dimen notification_small_icon_size_as_large
 dimen notification_subtext_size
 dimen notification_top_pad
 dimen notification_top_pad_large_text
+dimen profile_image_size
 dimen tooltip_corner_radius
 dimen tooltip_horizontal_padding
 dimen tooltip_margin
@@ -3074,6 +3079,8 @@ drawable btn_radio_off_mtrl
 drawable btn_radio_off_to_on_mtrl_animation
 drawable btn_radio_on_mtrl
 drawable btn_radio_on_to_off_mtrl_animation
+drawable card_background
+drawable circle_background
 drawable circle_blue_background
 drawable common_full_open_on_phone
 drawable common_google_signin_btn_icon_dark
@@ -3115,11 +3122,14 @@ drawable ic_chat
 drawable ic_clear_black_24
 drawable ic_clock_black_24dp
 drawable ic_close
+drawable ic_email
+drawable ic_google
 drawable ic_heart
 drawable ic_image_placeholder
 drawable ic_keyboard_black_24dp
 drawable ic_launcher
 drawable ic_launcher_background
+drawable ic_logout
 drawable ic_m3_chip_check
 drawable ic_m3_chip_checked_circle
 drawable ic_m3_chip_close
@@ -3131,6 +3141,7 @@ drawable ic_mtrl_chip_close_circle
 drawable ic_my_location
 drawable ic_notifications
 drawable ic_person
+drawable ic_phone
 drawable ic_profile
 drawable ic_profile_placeholder
 drawable ic_search_black_24
@@ -3311,6 +3322,7 @@ id bestChoice
 id blocking
 id bottom
 id bottomNavigation
+id bottom_navigation_menu
 id bounce
 id bounceBoth
 id bounceEnd
@@ -3325,7 +3337,6 @@ id btnContinueGoogle
 id btnContinuePhone
 id btnDislike
 id btnEditProfile
-id btnGoogle
 id btnLike
 id btnLocateMe
 id btnLogin
@@ -3333,7 +3344,6 @@ id btnLogout
 id btnNotifications
 id btnSaveContinue
 id btnSaveCore
-id btnSaveInterests
 id btnSend
 id btnSendOtp
 id btnSettings
@@ -3421,6 +3431,7 @@ id easeInOut
 id easeOut
 id east
 id edge
+id editProfile
 id edit_query
 id edit_text_id
 id elastic
@@ -3432,7 +3443,6 @@ id enterAlwaysCollapsed
 id etAge
 id etBio
 id etConfirmPassword
-id etEducation
 id etEmail
 id etFriends
 id etFullName
@@ -3462,7 +3472,6 @@ id flex_end
 id flex_start
 id flip
 id floating
-id flowHobbies
 id follow_system
 id forever
 id fragment_container_view_tag
@@ -3632,6 +3641,12 @@ id open_search_view_search_prefix
 id open_search_view_status_bar_spacer
 id open_search_view_toolbar
 id open_search_view_toolbar_container
+id optionLocation
+id optionLogout
+id optionMatches
+id optionMessages
+id optionNotifications
+id optionSettings
 id outline
 id outward
 id overshoot
@@ -3651,6 +3666,8 @@ id pin
 id position
 id postLayout
 id pressed
+id profileImage
+id profileName
 id progressBar
 id progress_circular
 id progress_horizontal
@@ -3764,21 +3781,6 @@ id tag_transition_group
 id tag_unhandled_key_event_manager
 id tag_unhandled_key_listeners
 id tag_window_insets_animation_callback
-id tbArt
-id tbCooking
-id tbDancing
-id tbGaming
-id tbHiking
-id tbMovies
-id tbMusic
-id tbPhotography
-id tbReading
-id tbRoadTrips
-id tbShopping
-id tbSports
-id tbTravel
-id tbVolunteering
-id tbWriting
 id terrain
 id text
 id text2
@@ -3975,10 +3977,10 @@ layout abc_search_dropdown_item_icons_2line
 layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
-layout activity_interests
 layout activity_locations_map
 layout activity_login
 layout activity_match_browsing
+layout activity_menu
 layout activity_messaging
 layout activity_notifications_settings
 layout activity_phone_auth
@@ -4584,6 +4586,8 @@ style MaterialAlertDialog_MaterialComponents_Title_Panel
 style MaterialAlertDialog_MaterialComponents_Title_Panel_CenterStacked
 style MaterialAlertDialog_MaterialComponents_Title_Text
 style MaterialAlertDialog_MaterialComponents_Title_Text_CenterStacked
+style MenuRowStyle
+style MenuRowText
 style Platform_AppCompat
 style Platform_AppCompat_Light
 style Platform_MaterialComponents
@@ -5551,4 +5555,5 @@ styleable ViewPager2 android_orientation
 styleable ViewStubCompat android_id android_layout android_inflatedId
 styleable ViewTransition android_id SharedValue SharedValueId clearsTag duration ifTagNotSet ifTagSet motionInterpolator motionTarget onStateTransition pathMotionArc setsTag transitionDisable upDuration viewTransitionMode
 styleable include constraintSet
+xml ga_ad_services_config
 xml image_share_filepaths

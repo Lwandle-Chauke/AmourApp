@@ -8,131 +8,130 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.datingapp.amour.data.User
+import com.datingapp.amour.data.UserProfile
 import com.datingapp.amour.data.UserRepository
+import com.datingapp.amour.utils.FirebaseAuthHelper
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-/**
- * Activity for initial profile setup
- * Users provide basic information, select photos, and set core profile details
- */
 class ProfileSetupActivity : AppCompatActivity() {
 
-    // UI component declarations
+    // UI components
     private lateinit var btnBack: ImageView
     private lateinit var imgProfile: ImageView
     private lateinit var gridPictures: GridLayout
     private lateinit var etFullName: EditText
     private lateinit var etAge: EditText
+    private lateinit var etBio: EditText
+    private lateinit var etLifeGoal: EditText
+    private lateinit var etWeekend: EditText
+    private lateinit var etFriends: EditText
+    private lateinit var cbFriends: CheckBox
+    private lateinit var cbShortTerm: CheckBox
+    private lateinit var cbLongTerm: CheckBox
     private lateinit var rgGender: RadioGroup
     private lateinit var rgOrientation: RadioGroup
     private lateinit var etLocation: EditText
     private lateinit var btnSave: Button
 
-    // Image handling variables
+    // Image handling
     private var profileUri: Uri? = null
-    private val imageUris = arrayOfNulls<Uri?>(6) // Array for additional images
-    private var currentImageIndex = -1 // -1 for profile image, 0-5 for additional images
-    private val PICK_IMAGE_REQUEST = 101 // Request code for image picker
+    private val imageUris = arrayOfNulls<Uri?>(6)
+    private var currentImageIndex = -1
+    private val PICK_IMAGE_REQUEST = 101
 
     // Data management
     private lateinit var userRepository: UserRepository
     private lateinit var storage: FirebaseStorage
+    private lateinit var auth: FirebaseAuth
+    private lateinit var userUid: String
     private lateinit var userEmail: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_setup)
 
-        // Initialize data management components
         initializeDependencies()
-
-        // Get user email from intent
-        getUserEmail()
-
-        // Initialize UI components
+        getUserInfo()
         initializeViews()
-
-        // Setup click listeners
         setupClickListeners()
-
-        // Load existing user data if available
         loadExistingUserData()
     }
 
-    /**
-     * Initialize repositories and Firebase services
-     */
     private fun initializeDependencies() {
         userRepository = UserRepository.getInstance(this)
         storage = FirebaseStorage.getInstance()
+        auth = FirebaseAuth.getInstance()
     }
 
-    /**
-     * Extract user email from intent or finish activity if not available
-     */
-    private fun getUserEmail() {
+    private fun getUserInfo() {
+        userUid = intent.getStringExtra("uid") ?: run {
+            val currentUser = FirebaseAuthHelper.getCurrentUser()
+            if (currentUser != null) {
+                currentUser.uid
+            } else {
+                Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
+                finish()
+                return
+            }
+        }
+
         userEmail = intent.getStringExtra("email") ?: run {
-            Toast.makeText(this, "User email not available", Toast.LENGTH_SHORT).show()
-            finish()
-            return
+            val currentUser = FirebaseAuthHelper.getCurrentUser()
+            currentUser?.email ?: run {
+                Toast.makeText(this, "User email not available", Toast.LENGTH_SHORT).show()
+                finish()
+                return
+            }
         }
     }
 
-    /**
-     * Bind XML views to Kotlin variables
-     */
     private fun initializeViews() {
         btnBack = findViewById(R.id.btnBack)
         imgProfile = findViewById(R.id.imgProfile)
         gridPictures = findViewById(R.id.gridPictures)
         etFullName = findViewById(R.id.etFullName)
         etAge = findViewById(R.id.etAge)
+        etBio = findViewById(R.id.etBio)
+        etLifeGoal = findViewById(R.id.etLifeGoal)
+        etWeekend = findViewById(R.id.etWeekend)
+        etFriends = findViewById(R.id.etFriends)
+        cbFriends = findViewById(R.id.cbFriends)
+        cbShortTerm = findViewById(R.id.cbShortTerm)
+        cbLongTerm = findViewById(R.id.cbLongTerm)
         rgGender = findViewById(R.id.rgGender)
         rgOrientation = findViewById(R.id.rgOrientation)
         etLocation = findViewById(R.id.etLocation)
         btnSave = findViewById(R.id.btnSaveCore)
     }
 
-    /**
-     * Setup click listeners for buttons and image views
-     */
     private fun setupClickListeners() {
-        // Back button - return to previous screen
         btnBack.setOnClickListener { onBackPressed() }
 
-        // Profile image click - open image picker
         imgProfile.setOnClickListener {
-            currentImageIndex = -1 // Mark as profile image
+            currentImageIndex = -1
             pickImage()
         }
 
-        // Additional image clicks - open image picker for specific slot
         for (i in 0 until gridPictures.childCount) {
             val imageView = gridPictures.getChildAt(i) as? ImageView
             imageView?.setOnClickListener {
-                currentImageIndex = i // Mark which additional image slot
+                currentImageIndex = i
                 pickImage()
             }
         }
 
-        // Save button - validate and save profile
         btnSave.setOnClickListener { saveProfile() }
     }
 
-    /**
-     * Launch image picker intent
-     */
     private fun pickImage() {
         val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*" // Only show image files
+        intent.type = "image/*"
         startActivityForResult(intent, PICK_IMAGE_REQUEST)
     }
 
-    /**
-     * Handle result from image picker
-     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -141,11 +140,9 @@ class ProfileSetupActivity : AppCompatActivity() {
 
             if (selectedImageUri != null) {
                 if (currentImageIndex == -1) {
-                    // Profile image selected
                     profileUri = selectedImageUri
                     imgProfile.setImageURI(profileUri)
                 } else {
-                    // Additional image selected
                     imageUris[currentImageIndex] = selectedImageUri
                     (gridPictures.getChildAt(currentImageIndex) as ImageView).setImageURI(selectedImageUri)
                 }
@@ -153,36 +150,31 @@ class ProfileSetupActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Load existing user data from database
-     */
     private fun loadExistingUserData() {
         lifecycleScope.launch {
             try {
-                val user = userRepository.getUserByEmail(userEmail)
-                user?.let { populateForm(it) }
+                val user = userRepository.getUserByUid(userUid)
+                user?.let { populateUserForm(it) }
+
+                val profile = userRepository.getUserProfile(userUid)
+                profile?.let { populateProfileForm(it) }
             } catch (e: Exception) {
-                // Silent fail - it's okay if no existing data
+                e.printStackTrace()
             }
         }
     }
 
-    /**
-     * Populate form fields with existing user data
-     */
-    private fun populateForm(user: User) {
+    private fun populateUserForm(user: User) {
         etFullName.setText(user.name)
         etAge.setText(user.age?.toString() ?: "")
         etLocation.setText(user.location ?: "")
 
-        // Set gender radio button
         when (user.gender) {
-            "He/Him" -> rgGender.check(R.id.rbMale)
-            "She/Her" -> rgGender.check(R.id.rbFemale)
-            "They/Them" -> rgGender.check(R.id.rbThey)
+            "Male", "He/Him" -> rgGender.check(R.id.rbMale)
+            "Female", "She/Her" -> rgGender.check(R.id.rbFemale)
+            "Other", "They/Them" -> rgGender.check(R.id.rbThey)
         }
 
-        // Set orientation radio button
         when (user.orientation) {
             "Straight" -> rgOrientation.check(R.id.rbStraight)
             "Gay" -> rgOrientation.check(R.id.rbGay)
@@ -193,23 +185,33 @@ class ProfileSetupActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Validate and save profile data to local and online databases
-     */
+    private fun populateProfileForm(profile: UserProfile) {
+        etBio.setText(profile.bio)
+        etLifeGoal.setText(profile.prompt1)
+        etWeekend.setText(profile.prompt2)
+        etFriends.setText(profile.prompt3)
+
+        val lookingForOptions = profile.lookingFor.split(",")
+        cbFriends.isChecked = lookingForOptions.contains("Friends")
+        cbShortTerm.isChecked = lookingForOptions.contains("Short-term")
+        cbLongTerm.isChecked = lookingForOptions.contains("Long-term")
+    }
+
     private fun saveProfile() {
-        // Get input values
         val name = etFullName.text.toString().trim()
         val ageText = etAge.text.toString().trim()
+        val bio = etBio.text.toString().trim()
+        val lifeGoal = etLifeGoal.text.toString().trim()
+        val weekend = etWeekend.text.toString().trim()
+        val friends = etFriends.text.toString().trim()
         val location = etLocation.text.toString().trim()
         val genderId = rgGender.checkedRadioButtonId
         val orientationId = rgOrientation.checkedRadioButtonId
 
-        // Validate all required fields
-        if (!validateInput(name, ageText, location, genderId, orientationId)) {
+        if (!validateInput(name, ageText, location, genderId, orientationId, bio, lifeGoal, weekend, friends)) {
             return
         }
 
-        // Parse age and validate range
         val age = ageText.toInt()
         if (age < 18 || age > 100) {
             etAge.error = "Age must be between 18 and 100"
@@ -217,44 +219,55 @@ class ProfileSetupActivity : AppCompatActivity() {
             return
         }
 
-        // Get selected gender and orientation
-        val gender = findViewById<RadioButton>(genderId).text.toString()
-        val orientation = findViewById<RadioButton>(orientationId).text.toString()
+        val gender = when (genderId) {
+            R.id.rbMale -> "Male"
+            R.id.rbFemale -> "Female"
+            R.id.rbThey -> "Other"
+            else -> "Other"
+        }
 
-        // Disable save button during processing
+        val orientation = when (orientationId) {
+            R.id.rbStraight -> "Straight"
+            R.id.rbGay -> "Gay"
+            R.id.rbLesbian -> "Lesbian"
+            R.id.rbBisexual -> "Bisexual"
+            R.id.rbAsexual -> "Asexual"
+            R.id.rbOther -> "Other"
+            else -> "Other"
+        }
+
+        val lookingFor = buildLookingForString()
+
         setSaveButtonState(false, "Saving...")
 
-        // Save profile in background
         lifecycleScope.launch {
             try {
-                // Upload images and get URLs
                 val (profileUrl, additionalUrls) = uploadImages()
-
-                // Create or update user object
                 val user = createUserObject(name, age, gender, orientation, location, profileUrl, additionalUrls)
+                val userProfile = createUserProfileObject(bio, lifeGoal, weekend, friends, lookingFor)
 
-                // Save to databases
                 userRepository.saveUser(user)
+                userRepository.saveUserProfile(userProfile)
+                userRepository.markProfileComplete(userUid)
 
-                // Success - navigate to next activity
                 showSuccessAndNavigate()
 
             } catch (e: Exception) {
-                // Handle errors
                 showErrorAndResetButton(e.message ?: "Unknown error")
             }
         }
     }
 
-    /**
-     * Validate all input fields
-     */
     private fun validateInput(
         name: String,
         ageText: String,
         location: String,
         genderId: Int,
-        orientationId: Int
+        orientationId: Int,
+        bio: String,
+        lifeGoal: String,
+        weekend: String,
+        friends: String
     ): Boolean {
         return when {
             name.isEmpty() -> {
@@ -285,29 +298,57 @@ class ProfileSetupActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please select your orientation", Toast.LENGTH_SHORT).show()
                 false
             }
+            bio.isEmpty() -> {
+                etBio.error = "Please enter your bio"
+                etBio.requestFocus()
+                false
+            }
+            lifeGoal.isEmpty() -> {
+                etLifeGoal.error = "Please complete this prompt"
+                etLifeGoal.requestFocus()
+                false
+            }
+            weekend.isEmpty() -> {
+                etWeekend.error = "Please complete this prompt"
+                etWeekend.requestFocus()
+                false
+            }
+            friends.isEmpty() -> {
+                etFriends.error = "Please complete this prompt"
+                etFriends.requestFocus()
+                false
+            }
+            !cbFriends.isChecked && !cbShortTerm.isChecked && !cbLongTerm.isChecked -> {
+                Toast.makeText(this, "Please select what you're looking for", Toast.LENGTH_SHORT).show()
+                false
+            }
             profileUri == null -> {
                 Toast.makeText(this, "Please select a profile picture", Toast.LENGTH_SHORT).show()
+                false
+            }
+            imageUris.count { it != null } < 1 -> {
+                Toast.makeText(this, "Please select at least 1 additional picture", Toast.LENGTH_SHORT).show()
                 false
             }
             else -> true
         }
     }
 
-    /**
-     * Upload profile and additional images to Firebase Storage
-     */
-    private suspend fun uploadImages(): Pair<String, String> {
-        // Upload profile image
-        val profileUrl = uploadImage(
-            profileUri!!,
-            "profile_${userEmail.replace(".", "_")}"
-        )
+    private fun buildLookingForString(): String {
+        val options = mutableListOf<String>()
+        if (cbFriends.isChecked) options.add("Friends")
+        if (cbShortTerm.isChecked) options.add("Short-term")
+        if (cbLongTerm.isChecked) options.add("Long-term")
+        return options.joinToString(",")
+    }
 
-        // Upload additional images
+    private suspend fun uploadImages(): Pair<String, String> {
+        val profileUrl = uploadImage(profileUri!!, "profile_$userUid")
+
         val additionalUrls = mutableListOf<String>()
         imageUris.forEachIndexed { index, uri ->
             uri?.let {
-                val url = uploadImage(it, "image_${userEmail.replace(".", "_")}_$index")
+                val url = uploadImage(it, "image_${userUid}_$index")
                 additionalUrls.add(url)
             }
         }
@@ -315,18 +356,12 @@ class ProfileSetupActivity : AppCompatActivity() {
         return Pair(profileUrl, additionalUrls.joinToString(","))
     }
 
-    /**
-     * Upload single image to Firebase Storage
-     */
     private suspend fun uploadImage(uri: Uri, filename: String): String {
         val storageRef = storage.reference.child("images/$filename.jpg")
-        storageRef.putFile(uri).await() // Wait for upload to complete
-        return storageRef.downloadUrl.await().toString() // Get download URL
+        val uploadTask = storageRef.putFile(uri).await()
+        return storageRef.downloadUrl.await().toString()
     }
 
-    /**
-     * Create User object with all collected data
-     */
     private suspend fun createUserObject(
         name: String,
         age: Int,
@@ -336,50 +371,80 @@ class ProfileSetupActivity : AppCompatActivity() {
         profileUrl: String,
         additionalUrls: String
     ): User {
-        // Get existing user to preserve password
-        val existingUser = userRepository.getUserByEmail(userEmail)
+        val existingUser = userRepository.getUserByUid(userUid)
 
         return User(
+            uid = userUid,
             email = userEmail,
             name = name,
-            passwordHash = existingUser?.passwordHash ?: "", // Preserve existing password
             age = age,
             gender = gender,
             orientation = orientation,
             location = location,
             profileImageUrl = profileUrl,
-            imageUrls = if (additionalUrls.isNotEmpty()) additionalUrls else null
+            imageUrls = if (additionalUrls.isNotEmpty()) additionalUrls else null,
+            isProfileComplete = true,
+            isEmailVerified = existingUser?.isEmailVerified ?: false,
+            createdAt = existingUser?.createdAt ?: System.currentTimeMillis(),
+            lastLogin = System.currentTimeMillis()
         )
     }
 
-    /**
-     * Update save button state during processing
-     */
+    private fun createUserProfileObject(
+        bio: String,
+        lifeGoal: String,
+        weekend: String,
+        friends: String,
+        lookingFor: String
+    ): UserProfile {
+        return UserProfile(
+            uid = userUid,
+            email = userEmail,
+            bio = bio,
+            prompt1 = lifeGoal,
+            prompt2 = weekend,
+            prompt3 = friends,
+            interests = "",
+            agePreference = "", // You can add this field later
+            distancePreference = "", // You can add this field later
+            lookingFor = lookingFor
+        )
+    }
+
     private fun setSaveButtonState(enabled: Boolean, text: String) {
         btnSave.isEnabled = enabled
         btnSave.text = text
     }
 
-    /**
-     * Handle successful save operation
-     */
     private fun showSuccessAndNavigate() {
         runOnUiThread {
             Toast.makeText(this, "Profile saved successfully!", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, InterestsActivity::class.java)
-            intent.putExtra("email", userEmail)
+
+            // Navigate to LocationsMapActivity instead of MenuActivity
+            val intent = Intent(this, LocationsMapActivity::class.java).apply {
+                putExtra("uid", userUid)
+                putExtra("email", userEmail)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
             startActivity(intent)
-            // Don't finish - allow back navigation
+            finish()
         }
     }
 
-    /**
-     * Handle errors during save operation
-     */
     private fun showErrorAndResetButton(errorMessage: String) {
         runOnUiThread {
             Toast.makeText(this, "Error: $errorMessage", Toast.LENGTH_LONG).show()
             setSaveButtonState(true, "Save & Continue")
         }
+    }
+
+    override fun onBackPressed() {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Save Profile?")
+            .setMessage("Do you want to save your profile before exiting?")
+            .setPositiveButton("Save") { _, _ -> saveProfile() }
+            .setNegativeButton("Exit") { _, _ -> super.onBackPressed() }
+            .setNeutralButton("Cancel", null)
+            .show()
     }
 }

@@ -172,7 +172,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Full Name"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray"/>
 
         <!-- Age -->
         <EditText
@@ -181,7 +183,106 @@
             android:layout_height="wrap_content"
             android:hint="Age"
             android:inputType="number"
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray"/>
+
+        <!-- Bio Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bio"
+            android:textAlignment="center"
+            android:textColor="#EC407A"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etBio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="e.g., Adventurous, foodie, love hiking and books."
+            android:inputType="textMultiLine"
+            android:lines="3"
+            android:gravity="top"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray"/>
+
+        <!-- Prompts -->
+        <EditText
+            android:id="@+id/etLifeGoal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="A life goal of mine is..."
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray"/>
+
+        <EditText
+            android:id="@+id/etWeekend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="I usually spend my weekends..."
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray"/>
+
+        <EditText
+            android:id="@+id/etFriends"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="My friends would describe me as..."
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray"/>
+
+        <!-- Looking For Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Im looking for..."
+            android:textAlignment="center"
+            android:textColor="#EC407A"
+            android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:id="@+id/lookingForOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="16dp">
+
+            <CheckBox
+                android:id="@+id/cbFriends"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Friends"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray"/>
+
+            <CheckBox
+                android:id="@+id/cbShortTerm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Short-term"
+                android:layout_marginStart="16dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray"/>
+
+            <CheckBox
+                android:id="@+id/cbLongTerm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Long-term"
+                android:layout_marginStart="16dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray"/>
+        </LinearLayout>
+
 
         <!-- Gender Identity -->
         <TextView
@@ -200,9 +301,9 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginBottom="16dp">
-            <RadioButton android:id="@+id/rbMale" android:text="He/Him"/>
-            <RadioButton android:id="@+id/rbFemale" android:text="She/Her" android:layout_marginStart="16dp"/>
-            <RadioButton android:id="@+id/rbThey" android:text="They/Them" android:layout_marginStart="16dp"/>
+            <RadioButton android:id="@+id/rbMale" android:text="He/Him" android:textColor="@color/black" />
+            <RadioButton android:id="@+id/rbFemale" android:text="She/Her" android:layout_marginStart="16dp" android:textColor="@color/black" />
+            <RadioButton android:id="@+id/rbThey" android:text="They/Them" android:layout_marginStart="16dp" android:textColor="@color/black" />
         </RadioGroup>
 
         <!-- Sexual Orientation -->
@@ -222,12 +323,12 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp">
 
-            <RadioButton android:id="@+id/rbStraight" android:text="Straight"/>
-            <RadioButton android:id="@+id/rbGay" android:text="Gay" android:layout_marginTop="8dp"/>
-            <RadioButton android:id="@+id/rbLesbian" android:text="Lesbian" android:layout_marginTop="8dp"/>
-            <RadioButton android:id="@+id/rbBisexual" android:text="Bisexual" android:layout_marginTop="8dp"/>
-            <RadioButton android:id="@+id/rbAsexual" android:text="Asexual" android:layout_marginTop="8dp"/>
-            <RadioButton android:id="@+id/rbOther" android:text="Other" android:layout_marginTop="8dp"/>
+            <RadioButton android:id="@+id/rbStraight" android:text="Straight" android:textColor="@color/black" />
+            <RadioButton android:id="@+id/rbGay" android:text="Gay" android:layout_marginTop="8dp" android:textColor="@color/black" />
+            <RadioButton android:id="@+id/rbLesbian" android:text="Lesbian" android:layout_marginTop="8dp" android:textColor="@color/black" />
+            <RadioButton android:id="@+id/rbBisexual" android:text="Bisexual" android:layout_marginTop="8dp" android:textColor="@color/black" />
+            <RadioButton android:id="@+id/rbAsexual" android:text="Asexual" android:layout_marginTop="8dp" android:textColor="@color/black" />
+            <RadioButton android:id="@+id/rbOther" android:text="Other" android:layout_marginTop="8dp" android:textColor="@color/black" />
         </RadioGroup>
 
         <!-- Location -->
@@ -236,7 +337,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="City"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray"/>
 
         <!-- Save Button -->
         <Button

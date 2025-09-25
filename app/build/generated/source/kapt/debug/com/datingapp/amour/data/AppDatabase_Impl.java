@@ -33,13 +33,13 @@ public final class AppDatabase_Impl extends AppDatabase {
   @Override
   @NonNull
   protected SupportSQLiteOpenHelper createOpenHelper(@NonNull final DatabaseConfiguration config) {
-    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(2) {
+    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(4) {
       @Override
       public void createAllTables(@NonNull final SupportSQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS `users` (`email` TEXT NOT NULL, `name` TEXT, `passwordHash` TEXT, `phone` TEXT, `age` INTEGER, `gender` TEXT, `orientation` TEXT, `location` TEXT, `profileImageUrl` TEXT, `imageUrls` TEXT, PRIMARY KEY(`email`))");
-        db.execSQL("CREATE TABLE IF NOT EXISTS `user_profiles` (`email` TEXT NOT NULL, `bio` TEXT NOT NULL, `gender` TEXT NOT NULL, `prompt1` TEXT NOT NULL, `prompt2` TEXT NOT NULL, `prompt3` TEXT NOT NULL, `interests` TEXT NOT NULL, `agePreference` TEXT NOT NULL, `distancePreference` TEXT NOT NULL, PRIMARY KEY(`email`))");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `users` (`uid` TEXT NOT NULL, `email` TEXT NOT NULL, `name` TEXT NOT NULL, `age` INTEGER, `gender` TEXT, `orientation` TEXT, `location` TEXT, `profileImageUrl` TEXT, `imageUrls` TEXT, `createdAt` INTEGER NOT NULL, `lastLogin` INTEGER NOT NULL, `isProfileComplete` INTEGER NOT NULL, `isEmailVerified` INTEGER NOT NULL, PRIMARY KEY(`uid`))");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `user_profiles` (`uid` TEXT NOT NULL, `email` TEXT NOT NULL, `bio` TEXT NOT NULL, `prompt1` TEXT NOT NULL, `prompt2` TEXT NOT NULL, `prompt3` TEXT NOT NULL, `interests` TEXT NOT NULL, `agePreference` TEXT NOT NULL, `distancePreference` TEXT NOT NULL, `lookingFor` TEXT NOT NULL, PRIMARY KEY(`uid`))");
         db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ee7fc6c2cdf4000153aca50399ca4851')");
+        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5abd59afb42fde8527102bf91e9e41a2')");
       }
 
       @Override
@@ -89,17 +89,20 @@ public final class AppDatabase_Impl extends AppDatabase {
       @NonNull
       public RoomOpenHelper.ValidationResult onValidateSchema(
           @NonNull final SupportSQLiteDatabase db) {
-        final HashMap<String, TableInfo.Column> _columnsUsers = new HashMap<String, TableInfo.Column>(10);
-        _columnsUsers.put("email", new TableInfo.Column("email", "TEXT", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsUsers.put("name", new TableInfo.Column("name", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsUsers.put("passwordHash", new TableInfo.Column("passwordHash", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsUsers.put("phone", new TableInfo.Column("phone", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        final HashMap<String, TableInfo.Column> _columnsUsers = new HashMap<String, TableInfo.Column>(13);
+        _columnsUsers.put("uid", new TableInfo.Column("uid", "TEXT", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsUsers.put("email", new TableInfo.Column("email", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsUsers.put("name", new TableInfo.Column("name", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsUsers.put("age", new TableInfo.Column("age", "INTEGER", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsUsers.put("gender", new TableInfo.Column("gender", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsUsers.put("orientation", new TableInfo.Column("orientation", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsUsers.put("location", new TableInfo.Column("location", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsUsers.put("profileImageUrl", new TableInfo.Column("profileImageUrl", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsUsers.put("imageUrls", new TableInfo.Column("imageUrls", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsUsers.put("createdAt", new TableInfo.Column("createdAt", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsUsers.put("lastLogin", new TableInfo.Column("lastLogin", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsUsers.put("isProfileComplete", new TableInfo.Column("isProfileComplete", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsUsers.put("isEmailVerified", new TableInfo.Column("isEmailVerified", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysUsers = new HashSet<TableInfo.ForeignKey>(0);
         final HashSet<TableInfo.Index> _indicesUsers = new HashSet<TableInfo.Index>(0);
         final TableInfo _infoUsers = new TableInfo("users", _columnsUsers, _foreignKeysUsers, _indicesUsers);
@@ -109,16 +112,17 @@ public final class AppDatabase_Impl extends AppDatabase {
                   + " Expected:\n" + _infoUsers + "\n"
                   + " Found:\n" + _existingUsers);
         }
-        final HashMap<String, TableInfo.Column> _columnsUserProfiles = new HashMap<String, TableInfo.Column>(9);
-        _columnsUserProfiles.put("email", new TableInfo.Column("email", "TEXT", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
+        final HashMap<String, TableInfo.Column> _columnsUserProfiles = new HashMap<String, TableInfo.Column>(10);
+        _columnsUserProfiles.put("uid", new TableInfo.Column("uid", "TEXT", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsUserProfiles.put("email", new TableInfo.Column("email", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsUserProfiles.put("bio", new TableInfo.Column("bio", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsUserProfiles.put("gender", new TableInfo.Column("gender", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsUserProfiles.put("prompt1", new TableInfo.Column("prompt1", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsUserProfiles.put("prompt2", new TableInfo.Column("prompt2", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsUserProfiles.put("prompt3", new TableInfo.Column("prompt3", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsUserProfiles.put("interests", new TableInfo.Column("interests", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsUserProfiles.put("agePreference", new TableInfo.Column("agePreference", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsUserProfiles.put("distancePreference", new TableInfo.Column("distancePreference", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsUserProfiles.put("lookingFor", new TableInfo.Column("lookingFor", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysUserProfiles = new HashSet<TableInfo.ForeignKey>(0);
         final HashSet<TableInfo.Index> _indicesUserProfiles = new HashSet<TableInfo.Index>(0);
         final TableInfo _infoUserProfiles = new TableInfo("user_profiles", _columnsUserProfiles, _foreignKeysUserProfiles, _indicesUserProfiles);
@@ -130,7 +134,7 @@ public final class AppDatabase_Impl extends AppDatabase {
         }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "ee7fc6c2cdf4000153aca50399ca4851", "da12722c39893ed6595b5e462dd0cfc1");
+    }, "5abd59afb42fde8527102bf91e9e41a2", "41c5ddcd7f5eca7efb49718f81a194b2");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(config.context).name(config.name).callback(_openCallback).build();
     final SupportSQLiteOpenHelper _helper = config.sqliteOpenHelperFactory.create(_sqliteConfig);
     return _helper;

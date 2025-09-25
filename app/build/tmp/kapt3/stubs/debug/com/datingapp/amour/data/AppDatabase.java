@@ -10,7 +10,7 @@ package com.datingapp.amour.data;
  * Version 1: initial release
  */
 @kotlin.Metadata(mv = {1, 9, 0}, k = 1, xi = 48, d1 = {"\u0000\u001a\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\b\u0002\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\u0002\b\'\u0018\u0000 \u00072\u00020\u0001:\u0001\u0007B\u0005\u00a2\u0006\u0002\u0010\u0002J\b\u0010\u0003\u001a\u00020\u0004H&J\b\u0010\u0005\u001a\u00020\u0006H&\u00a8\u0006\b"}, d2 = {"Lcom/datingapp/amour/data/AppDatabase;", "Landroidx/room/RoomDatabase;", "()V", "userDao", "Lcom/datingapp/amour/data/UserDao;", "userProfileDao", "Lcom/datingapp/amour/data/UserProfileDao;", "Companion", "app_debug"})
-@androidx.room.Database(entities = {com.datingapp.amour.data.User.class, com.datingapp.amour.data.UserProfile.class}, version = 2, exportSchema = true)
+@androidx.room.Database(entities = {com.datingapp.amour.data.User.class, com.datingapp.amour.data.UserProfile.class}, version = 4, exportSchema = true)
 public abstract class AppDatabase extends androidx.room.RoomDatabase {
     @kotlin.jvm.Volatile()
     @org.jetbrains.annotations.Nullable()

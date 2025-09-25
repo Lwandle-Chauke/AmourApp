@@ -2,11 +2,17 @@
     package="com.datingapp.amour">
 
     <!-- Permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- needed for picking images -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- For Android 10 and below -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
+    <!-- For Android 13+ -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
         android:allowBackup="true"
@@ -14,24 +20,17 @@
         android:label="Amour"
         android:theme="@style/Theme.Amour">
 
-        <!-- Google Maps API Key -->
+        <!-- Add your Google Maps API Key here -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_API_KEY" /> <!-- replace with your actual API key -->
+            android:value="AIzaSyB9cz7jLj4fHIzmpk9CvV_ck8j7cHNF-OU" />
 
-        <!-- App Activities -->
-        <activity android:name=".LocationsMapActivity" />
-        <activity android:name=".NotificationsSettingsActivity" />
-        <activity android:name=".MessagingActivity" />
-        <activity android:name=".MatchBrowsingActivity" />
-        <activity android:name=".ProfileSetupActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".InterestsActivity" />
-        <activity android:name=".ProfileViewActivity" />
-        <activity android:name=".PhoneAuthActivity" />
+        <!-- Google Sign-In -->
+        <meta-data
+            android:name="com.google.android.gms.auth.api.signin.SkipGoogleServicesCheck"
+            android:value="true" />
 
-
-        <!-- Launcher Activity -->
+        <!-- Reorder activities - launcher activity should be first -->
         <activity
             android:name=".WelcomeSignupActivity"
             android:exported="true">
@@ -40,6 +39,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".LoginActivity" />
+        <activity
+            android:name=".ProfileSetupActivity"
+            android:exported="false" />
+        <activity android:name=".LocationsMapActivity" />
+        <activity android:name=".MatchBrowsingActivity" />
+        <activity android:name=".NotificationsSettingsActivity" />
+        <activity android:name=".MessagingActivity" />
+        <activity android:name=".ProfileViewActivity" />
+        <activity android:name=".PhoneAuthActivity" />
 
     </application>
 </manifest>

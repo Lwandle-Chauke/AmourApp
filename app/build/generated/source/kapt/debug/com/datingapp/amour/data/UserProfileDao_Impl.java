@@ -37,26 +37,26 @@ public final class UserProfileDao_Impl implements UserProfileDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR REPLACE INTO `user_profiles` (`email`,`bio`,`gender`,`prompt1`,`prompt2`,`prompt3`,`interests`,`agePreference`,`distancePreference`) VALUES (?,?,?,?,?,?,?,?,?)";
+        return "INSERT OR REPLACE INTO `user_profiles` (`uid`,`email`,`bio`,`prompt1`,`prompt2`,`prompt3`,`interests`,`agePreference`,`distancePreference`,`lookingFor`) VALUES (?,?,?,?,?,?,?,?,?,?)";
       }
 
       @Override
       protected void bind(@NonNull final SupportSQLiteStatement statement,
           @NonNull final UserProfile entity) {
-        if (entity.getEmail() == null) {
+        if (entity.getUid() == null) {
           statement.bindNull(1);
         } else {
-          statement.bindString(1, entity.getEmail());
+          statement.bindString(1, entity.getUid());
         }
-        if (entity.getBio() == null) {
+        if (entity.getEmail() == null) {
           statement.bindNull(2);
         } else {
-          statement.bindString(2, entity.getBio());
+          statement.bindString(2, entity.getEmail());
         }
-        if (entity.getGender() == null) {
+        if (entity.getBio() == null) {
           statement.bindNull(3);
         } else {
-          statement.bindString(3, entity.getGender());
+          statement.bindString(3, entity.getBio());
         }
         if (entity.getPrompt1() == null) {
           statement.bindNull(4);
@@ -87,6 +87,11 @@ public final class UserProfileDao_Impl implements UserProfileDao {
           statement.bindNull(9);
         } else {
           statement.bindString(9, entity.getDistancePreference());
+        }
+        if (entity.getLookingFor() == null) {
+          statement.bindNull(10);
+        } else {
+          statement.bindString(10, entity.getLookingFor());
         }
       }
     };
@@ -128,17 +133,24 @@ public final class UserProfileDao_Impl implements UserProfileDao {
       public UserProfile call() throws Exception {
         final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
         try {
+          final int _cursorIndexOfUid = CursorUtil.getColumnIndexOrThrow(_cursor, "uid");
           final int _cursorIndexOfEmail = CursorUtil.getColumnIndexOrThrow(_cursor, "email");
           final int _cursorIndexOfBio = CursorUtil.getColumnIndexOrThrow(_cursor, "bio");
-          final int _cursorIndexOfGender = CursorUtil.getColumnIndexOrThrow(_cursor, "gender");
           final int _cursorIndexOfPrompt1 = CursorUtil.getColumnIndexOrThrow(_cursor, "prompt1");
           final int _cursorIndexOfPrompt2 = CursorUtil.getColumnIndexOrThrow(_cursor, "prompt2");
           final int _cursorIndexOfPrompt3 = CursorUtil.getColumnIndexOrThrow(_cursor, "prompt3");
           final int _cursorIndexOfInterests = CursorUtil.getColumnIndexOrThrow(_cursor, "interests");
           final int _cursorIndexOfAgePreference = CursorUtil.getColumnIndexOrThrow(_cursor, "agePreference");
           final int _cursorIndexOfDistancePreference = CursorUtil.getColumnIndexOrThrow(_cursor, "distancePreference");
+          final int _cursorIndexOfLookingFor = CursorUtil.getColumnIndexOrThrow(_cursor, "lookingFor");
           final UserProfile _result;
           if (_cursor.moveToFirst()) {
+            final String _tmpUid;
+            if (_cursor.isNull(_cursorIndexOfUid)) {
+              _tmpUid = null;
+            } else {
+              _tmpUid = _cursor.getString(_cursorIndexOfUid);
+            }
             final String _tmpEmail;
             if (_cursor.isNull(_cursorIndexOfEmail)) {
               _tmpEmail = null;
@@ -150,12 +162,6 @@ public final class UserProfileDao_Impl implements UserProfileDao {
               _tmpBio = null;
             } else {
               _tmpBio = _cursor.getString(_cursorIndexOfBio);
-            }
-            final String _tmpGender;
-            if (_cursor.isNull(_cursorIndexOfGender)) {
-              _tmpGender = null;
-            } else {
-              _tmpGender = _cursor.getString(_cursorIndexOfGender);
             }
             final String _tmpPrompt1;
             if (_cursor.isNull(_cursorIndexOfPrompt1)) {
@@ -193,7 +199,13 @@ public final class UserProfileDao_Impl implements UserProfileDao {
             } else {
               _tmpDistancePreference = _cursor.getString(_cursorIndexOfDistancePreference);
             }
-            _result = new UserProfile(_tmpEmail,_tmpBio,_tmpGender,_tmpPrompt1,_tmpPrompt2,_tmpPrompt3,_tmpInterests,_tmpAgePreference,_tmpDistancePreference);
+            final String _tmpLookingFor;
+            if (_cursor.isNull(_cursorIndexOfLookingFor)) {
+              _tmpLookingFor = null;
+            } else {
+              _tmpLookingFor = _cursor.getString(_cursorIndexOfLookingFor);
+            }
+            _result = new UserProfile(_tmpUid,_tmpEmail,_tmpBio,_tmpPrompt1,_tmpPrompt2,_tmpPrompt3,_tmpInterests,_tmpAgePreference,_tmpDistancePreference,_tmpLookingFor);
           } else {
             _result = null;
           }

@@ -2,56 +2,66 @@ package com.datingapp.amour.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.Ignore
+import com.google.firebase.database.Exclude
 
-/**
- * Represents a user account.
- * Stored in Room and can be synced to Firebase.
- */
 @Entity(tableName = "users")
 data class User(
-    @PrimaryKey val email: String,       // unique identifier
-    var name: String? = null,
-    var passwordHash: String? = null,
-    var phone: String? = null,
-    var age: Int? = null,
-    var gender: String? = null,
-    var orientation: String? = null,
-    var location: String? = null,
-    var profileImageUrl: String? = null,
-    var imageUrls: String? = null        // comma-separated additional images
+    @PrimaryKey
+    val uid: String = "",
+    val email: String = "",
+    val name: String = "",
+
+    // Profile information
+    val age: Int? = null,
+    val gender: String? = null,
+    val orientation: String? = null,
+    val location: String? = null,
+    val profileImageUrl: String? = null,
+    val imageUrls: String? = null,
+
+    // Account metadata
+    val createdAt: Long = System.currentTimeMillis(),
+    val lastLogin: Long = System.currentTimeMillis(),
+    val isProfileComplete: Boolean = false,
+    val isEmailVerified: Boolean = false
 ) {
-    /**
-     * Convert User object to a Map for Firebase storage.
-     */
-    fun toMap(): Map<String, Any?> = mapOf(
-        "email" to email,
-        "name" to name,
-        "passwordHash" to passwordHash,
-        "phone" to phone,
-        "age" to age,
-        "gender" to gender,
-        "orientation" to orientation,
-        "location" to location,
-        "profileImageUrl" to profileImageUrl,
-        "imageUrls" to imageUrls
-    )
+    @Ignore
+    @Exclude
+    fun toMap(): Map<String, Any?> {
+        return mapOf(
+            "uid" to uid,
+            "email" to email,
+            "name" to name,
+            "age" to age,
+            "gender" to gender,
+            "orientation" to orientation,
+            "location" to location,
+            "profileImageUrl" to profileImageUrl,
+            "imageUrls" to imageUrls,
+            "createdAt" to createdAt,
+            "lastLogin" to lastLogin,
+            "isProfileComplete" to isProfileComplete,
+            "isEmailVerified" to isEmailVerified
+        )
+    }
 
     companion object {
-        /**
-         * Converts a Firebase Map back into a User object.
-         */
-        fun fromMap(map: Map<String, Any?>): User {
+        fun fromMap(map: Map<String, Any>): User {
             return User(
+                uid = map["uid"] as? String ?: "",
                 email = map["email"] as? String ?: "",
-                name = map["name"] as? String,
-                passwordHash = map["passwordHash"] as? String,
-                phone = map["phone"] as? String,
+                name = map["name"] as? String ?: "",
                 age = (map["age"] as? Long)?.toInt(),
                 gender = map["gender"] as? String,
                 orientation = map["orientation"] as? String,
                 location = map["location"] as? String,
                 profileImageUrl = map["profileImageUrl"] as? String,
-                imageUrls = map["imageUrls"] as? String
+                imageUrls = map["imageUrls"] as? String,
+                createdAt = map["createdAt"] as? Long ?: System.currentTimeMillis(),
+                lastLogin = map["lastLogin"] as? Long ?: System.currentTimeMillis(),
+                isProfileComplete = map["isProfileComplete"] as? Boolean ?: false,
+                isEmailVerified = map["isEmailVerified"] as? Boolean ?: false
             )
         }
     }

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.datingapp.amour.app-mergeDebugResources-43:/values-watch-v20/values-watch-v20.xml",
+            "outputFile": "com.datingapp.amour.app-mergeDebugResources-46:/values-watch-v20/values-watch-v20.xml",
             "map": [
                 {
                     "source": "C:\\Users\\lab_services_student\\.gradle\\caches\\8.10.2\\transforms\\68a8fb4342c06337aa1a1cbbf0a3036b\\transformed\\jetified-play-services-auth-20.7.0\\res\\values-watch-v20\\values.xml",

@@ -4,6 +4,10 @@
     <color name="purple_700">#3700B3</color>
     <color name="teal_200">#03DAC5</color>
     <color name="teal_700">#018786</color>
-    <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray">#CCCCCC</color>
+    <color name="red">#FF0000</color> <!-- Fix for @color/red -->
+    <color name="pink">#EC407A</color> <!-- For your buttons/titles -->
+
 </resources>

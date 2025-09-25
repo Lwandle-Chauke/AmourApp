@@ -56,17 +56,25 @@ dependencies {
     implementation("com.google.android.flexbox:flexbox:3.0.0")
     implementation("androidx.gridlayout:gridlayout:1.0.0")
 
+    // Coroutines
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+
     // GOOGLE PLAY SERVICES
     implementation("com.google.android.gms:play-services-maps:19.2.0")
     implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
+
     // FIREBASE (BoM controls versions)
-    implementation(platform("com.google.firebase:firebase-bom:32.2.0"))
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-database-ktx")
     implementation("com.google.firebase:firebase-storage-ktx")
+
+    implementation ("com.google.firebase:firebase-storage-ktx:20.3.0")
+    implementation ("com.google.firebase:firebase-database-ktx:20.3.0")
+    implementation ("com.google.firebase:firebase-auth-ktx:22.3.0")
 
     // ROOM (2.6.1 is latest stable)
     val roomVersion = "2.6.1"

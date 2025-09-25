@@ -6,25 +6,18 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.datingapp.amour.data.User
-import com.datingapp.amour.data.UserProfile
 import com.datingapp.amour.data.UserRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/**
- * Main profile display activity
- * Shows complete user profile with options to edit and navigate to other app sections
- */
 class ProfileViewActivity : AppCompatActivity() {
 
-    // Data management
     private lateinit var userRepository: UserRepository
-    private lateinit var userEmail: String
+    private lateinit var userUid: String
 
-    // UI component declarations
+    // UI components
     private lateinit var photoContainer: LinearLayout
     private lateinit var tvNameAge: TextView
     private lateinit var tvGender: TextView
@@ -32,8 +25,8 @@ class ProfileViewActivity : AppCompatActivity() {
     private lateinit var tvBio: TextView
     private lateinit var tvPrompts: TextView
     private lateinit var tvLookingFor: TextView
-    private lateinit var tvInterests: TextView
-    private lateinit var tvEducation: TextView
+    private lateinit var tvInterestsLifestyle: TextView
+    private lateinit var tvPreferences: TextView
     private lateinit var tvLocation: TextView
     private lateinit var btnEditProfile: Button
     private lateinit var btnSaveContinue: Button
@@ -43,145 +36,113 @@ class ProfileViewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_view)
 
-        // Initialize components in order
-        initializeDependencies()
-        getUserEmail()
-        initializeViews()
-        setupClickListeners()
-        setupNavigation()
-        loadProfileData()
+        try {
+            initializeDependencies()
+            getUserUid()
+            initializeViews()
+            setupClickListeners()
+            setupNavigation()
+            loadProfileData()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error initializing: ${e.message}", Toast.LENGTH_LONG).show()
+            e.printStackTrace()
+            val intent = Intent(this, MenuActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 
-    /**
-     * Initialize repositories and services
-     */
     private fun initializeDependencies() {
         userRepository = UserRepository.getInstance(this)
     }
 
-    /**
-     * Extract user email from intent
-     */
-    private fun getUserEmail() {
-        userEmail = intent.getStringExtra("email") ?: run {
-            Toast.makeText(this, "User email not available", Toast.LENGTH_SHORT).show()
+    private fun getUserUid() {
+        userUid = intent.getStringExtra("uid") ?: run {
+            Toast.makeText(this, "User UID not available", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, LoginActivity::class.java))
             finish()
             return
         }
     }
 
-    /**
-     * Bind XML views to Kotlin variables
-     */
     private fun initializeViews() {
-        photoContainer = findViewById(R.id.photoContainer)
-        tvNameAge = findViewById(R.id.tvNameAge)
-        tvGender = findViewById(R.id.tvGender)
-        tvOrientation = findViewById(R.id.tvOrientation)
-        tvBio = findViewById(R.id.tvBio)
-        tvPrompts = findViewById(R.id.tvPrompts)
-        tvLookingFor = findViewById(R.id.tvLookingFor)
-        tvInterests = findViewById(R.id.tvInterestsLifestyle)
-        tvEducation = findViewById(R.id.tvPreferences)
-        tvLocation = findViewById(R.id.tvLocation)
-        btnEditProfile = findViewById(R.id.btnEditProfile)
-        btnSaveContinue = findViewById(R.id.btnSaveContinue)
-        bottomNavigation = findViewById(R.id.bottomNavigation)
+        try {
+            photoContainer = findViewById(R.id.photoContainer)
+            tvNameAge = findViewById(R.id.tvNameAge)
+            tvGender = findViewById(R.id.tvGender)
+            tvOrientation = findViewById(R.id.tvOrientation)
+            tvBio = findViewById(R.id.tvBio)
+            tvPrompts = findViewById(R.id.tvPrompts)
+            tvLookingFor = findViewById(R.id.tvLookingFor)
+            tvInterestsLifestyle = findViewById(R.id.tvInterestsLifestyle)
+            tvPreferences = findViewById(R.id.tvPreferences)
+            tvLocation = findViewById(R.id.tvLocation)
+            btnEditProfile = findViewById(R.id.btnEditProfile)
+            btnSaveContinue = findViewById(R.id.btnSaveContinue)
+            bottomNavigation = findViewById(R.id.bottomNavigation)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Layout error: ${e.message}", Toast.LENGTH_LONG).show()
+            throw e
+        }
     }
 
-    /**
-     * Setup button click listeners
-     */
     private fun setupClickListeners() {
-        // Edit profile button - navigate to profile setup
         btnEditProfile.setOnClickListener {
             val intent = Intent(this, ProfileSetupActivity::class.java)
-            intent.putExtra("email", userEmail)
+            intent.putExtra("uid", userUid)
             startActivity(intent)
         }
 
-        // Save & continue button - navigate to next app section
         btnSaveContinue.setOnClickListener {
-            val intent = Intent(this, LocationsMapActivity::class.java)
+            val intent = Intent(this, MenuActivity::class.java)
+            intent.putExtra("uid", userUid)
             startActivity(intent)
-            // Don't finish - allow back navigation
+            finish()
         }
     }
 
-    /**
-     * Setup bottom navigation menu
-     */
     private fun setupNavigation() {
         bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_profile -> {
-                    // Already on profile page
-                    true
-                }
+                R.id.nav_profile -> true
                 R.id.nav_matches -> {
-                    // Navigate to matches page
                     Toast.makeText(this, "Matches feature coming soon", Toast.LENGTH_SHORT).show()
                     true
                 }
                 R.id.nav_chat -> {
-                    // Navigate to chat page
                     Toast.makeText(this, "Chat feature coming soon", Toast.LENGTH_SHORT).show()
                     true
                 }
                 R.id.nav_settings -> {
-                    // Navigate to settings page
                     Toast.makeText(this, "Settings feature coming soon", Toast.LENGTH_SHORT).show()
                     true
                 }
                 else -> false
             }
         }
-
-        // Highlight current page
         bottomNavigation.selectedItemId = R.id.nav_profile
     }
 
-    /**
-     * Load user profile data from database and sync with Firebase
-     */
     private fun loadProfileData() {
         lifecycleScope.launch {
             try {
-                // Load from local database first for quick display
                 val (user, profile) = withContext(Dispatchers.IO) {
                     Pair(
-                        userRepository.getUserByEmail(userEmail),
-                        userRepository.getProfile(userEmail)
+                        userRepository.getUserByUid(userUid),
+                        userRepository.getUserProfile(userUid)
                     )
                 }
 
-                // Display loaded data
                 runOnUiThread {
                     displayUserData(user, profile)
                     loadImages(user)
                 }
 
-                // Sync with Firebase in background
-                withContext(Dispatchers.IO) {
-                    userRepository.syncUserFromFirebase(userEmail)
-                    userRepository.syncProfileFromFirebase(userEmail)
-
-                    // Reload data after sync
-                    val syncedUser = userRepository.getUserByEmail(userEmail)
-                    val syncedProfile = userRepository.getProfile(userEmail)
-
-                    runOnUiThread {
-                        displayUserData(syncedUser, syncedProfile)
-                        loadImages(syncedUser)
-                    }
-                }
-
             } catch (e: Exception) {
-                // Handle errors gracefully
                 runOnUiThread {
                     Toast.makeText(
                         this@ProfileViewActivity,
-                        "Error loading data: ${e.message}",
+                        "Error loading profile: ${e.message}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -189,76 +150,65 @@ class ProfileViewActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Display user data in UI components
-     */
-    private fun displayUserData(user: User?, profile: UserProfile?) {
-        // Display basic user information
+    private fun displayUserData(user: com.datingapp.amour.data.User?, profile: com.datingapp.amour.data.UserProfile?) {
         user?.let {
-            tvNameAge.text = "${it.name}, ${it.age ?: "N/A"}"
+            tvNameAge.text = "${it.name ?: "No name"}, ${it.age ?: "N/A"}"
             tvGender.text = "Gender: ${it.gender ?: "Not specified"}"
             tvOrientation.text = "Orientation: ${it.orientation ?: "Not specified"}"
             tvLocation.text = "Location: ${it.location ?: "Not specified"}"
         }
 
-        // Display profile details
         profile?.let {
             tvBio.text = it.bio.ifEmpty { "No bio yet" }
             tvPrompts.text = buildPromptsText(it)
-            tvLookingFor.text = "Looking For: ${it.agePreference.ifEmpty { "Not specified" }}"
-            tvInterests.text = "Interests: ${it.interests.ifEmpty { "Not specified" }}"
-            tvEducation.text = "Education/Occupation: ${it.distancePreference}"
+            tvLookingFor.text = "Looking For: ${it.lookingFor.ifEmpty { "Not specified" }}"
+            tvInterestsLifestyle.text = "Interests: ${it.interests.ifEmpty { "Not specified" }}"
+            tvPreferences.text = "Preferences: ${it.distancePreference.ifEmpty { "Not specified" }}"
         }
 
-        // Enable continue button only if profile is complete
         val isProfileComplete = user != null && profile != null
         btnSaveContinue.isEnabled = isProfileComplete
         btnSaveContinue.alpha = if (isProfileComplete) 1.0f else 0.5f
     }
 
-    /**
-     * Build formatted text for profile prompts
-     */
-    private fun buildPromptsText(profile: UserProfile): String {
+    private fun buildPromptsText(profile: com.datingapp.amour.data.UserProfile): String {
         return StringBuilder().apply {
-            append("Life Goal: ${profile.prompt1}\n")
-            append("Weekends: ${profile.prompt2}\n")
-            append("Friends Say: ${profile.prompt3}")
+            append("Life Goal: ${profile.prompt1.ifEmpty { "Not specified" }}\n")
+            append("Weekends: ${profile.prompt2.ifEmpty { "Not specified" }}\n")
+            append("Friends Say: ${profile.prompt3.ifEmpty { "Not specified" }}")
         }.toString()
     }
 
-    /**
-     * Load profile images using Glide library
-     */
-    private fun loadImages(user: User?) {
+    private fun loadImages(user: com.datingapp.amour.data.User?) {
         user?.let {
-            // Load main profile image
             it.profileImageUrl?.let { url ->
                 if (photoContainer.childCount > 0) {
-                    Glide.with(this)
-                        .load(url)
-                        .placeholder(R.drawable.ic_profile_placeholder) // Add placeholder in drawable
-                        .into(photoContainer.getChildAt(0) as ImageView)
+                    val firstImageView = photoContainer.getChildAt(0) as? ImageView
+                    firstImageView?.let { imageView ->
+                        Glide.with(this)
+                            .load(url)
+                            .placeholder(android.R.drawable.ic_menu_gallery)
+                            .into(imageView)
+                    }
                 }
             }
 
-            // Load additional images
             it.imageUrls?.split(",")?.forEachIndexed { index, url ->
-                if (index < photoContainer.childCount - 1 && url.isNotBlank()) {
-                    Glide.with(this)
-                        .load(url)
-                        .placeholder(R.drawable.ic_image_placeholder) // Add placeholder in drawable
-                        .into(photoContainer.getChildAt(index + 1) as ImageView)
+                if (index + 1 < photoContainer.childCount && url.isNotBlank()) {
+                    val imageView = photoContainer.getChildAt(index + 1) as? ImageView
+                    imageView?.let { iv ->
+                        Glide.with(this)
+                            .load(url)
+                            .placeholder(android.R.drawable.ic_menu_gallery)
+                            .into(iv)
+                    }
                 }
             }
         }
     }
 
-    /**
-     * Refresh data when activity resumes
-     */
     override fun onResume() {
         super.onResume()
-        loadProfileData() // Reload data when returning from edit screen
+        loadProfileData()
     }
 }

@@ -4,23 +4,24 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
-/**
- * DAO interface for User entity operations.
- */
+
 @Dao
 interface UserDao {
 
-    /**
-     * Insert or update a user in local Room database.
-     * If a conflict (same email) occurs, replace the existing record.
-     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(user: User)
+    suspend fun insertUser(user: User)
 
-    /**
-     * Retrieve a user by email from the local database.
-     */
-    @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
-    suspend fun getUserByEmail(email: String): User?
+    @Query("SELECT * FROM users WHERE uid = :uid LIMIT 1")
+    suspend fun getUserByUid(uid: String): User?
+
+    @Update
+    suspend fun updateUser(user: User)
+
+    @Query("UPDATE users SET lastLogin = :timestamp WHERE uid = :uid")
+    suspend fun updateLastLogin(uid: String, timestamp: Long = System.currentTimeMillis())
+
+    @Query("DELETE FROM users WHERE uid = :uid")
+    suspend fun deleteUser(uid: String)
 }

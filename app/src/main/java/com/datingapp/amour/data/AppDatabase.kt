@@ -16,7 +16,7 @@ import androidx.room.RoomDatabase
  */
 @Database(
     entities = [User::class, UserProfile::class],
-    version = 2, // increment version whenever schema changes
+    version = 4, // increment version whenever schema changes
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {

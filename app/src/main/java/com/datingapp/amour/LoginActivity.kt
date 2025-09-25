@@ -2,170 +2,170 @@ package com.datingapp.amour
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Patterns
+import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.datingapp.amour.data.AppDatabase
 import com.datingapp.amour.data.User
-import com.datingapp.amour.utils.Utils
+import com.datingapp.amour.data.UserRepository
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 
-/**
- * Activity for user authentication/login
- * Handles user login and redirects to appropriate activity based on profile completion
- */
 class LoginActivity : AppCompatActivity() {
 
-    // UI component declarations
-    private lateinit var etEmail: EditText
-    private lateinit var etPassword: EditText
+    private lateinit var auth: FirebaseAuth
+    private lateinit var emailInput: EditText
+    private lateinit var passwordInput: EditText
     private lateinit var btnLogin: Button
-    private lateinit var tvSignUp: TextView
+    private lateinit var btnGoogle: Button
+    private lateinit var btnPhone: Button
+    private lateinit var googleSignInClient: GoogleSignInClient
 
-    // Database reference
-    private lateinit var db: AppDatabase
+    private val RC_SIGN_IN = 1001
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        // Initialize UI components
-        initializeViews()
-
-        // Setup click listeners
-        setupClickListeners()
-    }
-
-    /**
-     * Bind XML views to Kotlin variables
-     */
-    private fun initializeViews() {
-        etEmail = findViewById(R.id.etEmail)
-        etPassword = findViewById(R.id.etPassword)
+        auth = FirebaseAuth.getInstance()
+        emailInput = findViewById(R.id.etEmail)
+        passwordInput = findViewById(R.id.etPassword)
         btnLogin = findViewById(R.id.btnLogin)
-        tvSignUp = findViewById(R.id.tvSignUp)
+        btnGoogle = findViewById(R.id.btnContinueGoogle)
+        btnPhone = findViewById(R.id.btnContinuePhone)
 
-        // Initialize Room database
-        db = AppDatabase.getDatabase(this)
-    }
+        // Google Sign-In Config
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-    /**
-     * Setup button click listeners
-     */
-    private fun setupClickListeners() {
-        btnLogin.setOnClickListener { loginUser() }
-        tvSignUp.setOnClickListener {
-            // Navigate to registration screen
-            startActivity(Intent(this, WelcomeSignupActivity::class.java))
+        btnLogin.setOnClickListener { loginWithEmail() }
+        btnGoogle.setOnClickListener { loginWithGoogle() }
+        btnPhone.setOnClickListener {
+            val intent = Intent(this, PhoneAuthActivity::class.java)
+            startActivity(intent)
         }
     }
 
-    /**
-     * Handle user authentication process
-     * Validates credentials and navigates to appropriate activity
-     */
-    private fun loginUser() {
-        // Get input values
-        val email = etEmail.text.toString().trim()
-        val password = etPassword.text.toString()
+    private fun loginWithEmail() {
+        val email = emailInput.text.toString().trim()
+        val password = passwordInput.text.toString().trim()
 
-        // Validate input fields
-        if (!validateInput(email, password)) {
-            return // Stop if validation fails
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Fill in all fields", Toast.LENGTH_SHORT).show()
+            return
         }
 
-        // Hash password for comparison
-        val hashedPassword = Utils.hashPassword(password)
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val firebaseUser = auth.currentUser
+                firebaseUser?.let { user ->
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        val userRepository = UserRepository.getInstance(this@LoginActivity)
+                        val existingUser = userRepository.getUserByUid(user.uid)
 
-        // Use lifecycleScope for coroutine that follows activity lifecycle
-        lifecycleScope.launchWhenStarted {
-            // Retrieve user from database on background thread
-            val user = withContext(Dispatchers.IO) {
-                db.userDao().getUserByEmail(email)
-            }
+                        if (existingUser == null) {
+                            val newUser = User(
+                                uid = user.uid,
+                                name = user.displayName ?: "Email User",
+                                email = user.email ?: "",
+                                isEmailVerified = user.isEmailVerified
+                            )
+                            userRepository.saveUser(newUser)
+                        }
 
-            // Check if user exists and password matches
-            if (user != null && user.passwordHash == hashedPassword) {
-                // Login successful
-                Toast.makeText(
-                    this@LoginActivity,
-                    "Login successful!",
-                    Toast.LENGTH_SHORT
-                ).show()
+                        userRepository.updateLastLogin(user.uid)
 
-                // Navigate based on profile completion status
-                if (isProfileComplete(user)) {
-                    openProfileView(email) // Profile is complete
-                } else {
-                    openProfileSetup(email) // Profile needs setup
+                        if (existingUser?.isProfileComplete == true) {
+                            openMainApp(user.uid)
+                        } else {
+                            openProfileSetup(user.uid, user.email ?: "")
+                        }
+                    }
                 }
             } else {
-                // Invalid credentials
                 Toast.makeText(
-                    this@LoginActivity,
-                    "Invalid email or password",
-                    Toast.LENGTH_SHORT
+                    this,
+                    "Login failed: ${task.exception?.message}",
+                    Toast.LENGTH_LONG
                 ).show()
             }
         }
     }
 
-    /**
-     * Validate email and password input
-     * @return true if valid, false otherwise
-     */
-    private fun validateInput(email: String, password: String): Boolean {
-        return when {
-            email.isEmpty() -> {
-                etEmail.error = "Please enter your email address"
-                etEmail.requestFocus()
-                false
+    private fun loginWithGoogle() {
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.result
+                val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                auth.signInWithCredential(credential).addOnCompleteListener { authTask ->
+                    if (authTask.isSuccessful) {
+                        val firebaseUser = auth.currentUser
+                        firebaseUser?.let { user ->
+                            lifecycleScope.launch(Dispatchers.Main) {
+                                val userRepository = UserRepository.getInstance(this@LoginActivity)
+                                val existingUser = userRepository.getUserByUid(user.uid)
+
+                                if (existingUser == null) {
+                                    val newUser = User(
+                                        uid = user.uid,
+                                        name = user.displayName ?: "Google User",
+                                        email = user.email ?: "",
+                                        isEmailVerified = true
+                                    )
+                                    userRepository.saveUser(newUser)
+                                }
+
+                                userRepository.updateLastLogin(user.uid)
+
+                                if (existingUser?.isProfileComplete == true) {
+                                    openMainApp(user.uid)
+                                } else {
+                                    openProfileSetup(user.uid, user.email ?: "")
+                                }
+                            }
+                        }
+                    } else {
+                        Toast.makeText(
+                            this,
+                            "Google sign-in failed",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("LoginActivity", "Google Sign-in failed", e)
+                Toast.makeText(this, "Google Sign-in failed", Toast.LENGTH_SHORT).show()
             }
-            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                etEmail.error = "Please enter a valid email address"
-                etEmail.requestFocus()
-                false
-            }
-            password.isEmpty() -> {
-                etPassword.error = "Please enter your password"
-                etPassword.requestFocus()
-                false
-            }
-            else -> true // All validations passed
         }
     }
 
-    /**
-     * Check if user profile is complete
-     * @return true if all required profile fields are filled
-     */
-    private fun isProfileComplete(user: User): Boolean {
-        return user.age != null &&
-                !user.gender.isNullOrEmpty() &&
-                !user.orientation.isNullOrEmpty() &&
-                !user.location.isNullOrEmpty() &&
-                !user.profileImageUrl.isNullOrEmpty()
-    }
-
-    /**
-     * Navigate to ProfileSetupActivity for incomplete profiles
-     */
-    private fun openProfileSetup(email: String) {
+    private fun openProfileSetup(uid: String, email: String) {
         val intent = Intent(this, ProfileSetupActivity::class.java)
+        intent.putExtra("uid", uid)
         intent.putExtra("email", email)
         startActivity(intent)
-        finish() // Close login activity
+        finish()
     }
 
-    /**
-     * Navigate to ProfileViewActivity for complete profiles
-     */
-    private fun openProfileView(email: String) {
-        val intent = Intent(this, ProfileViewActivity::class.java)
-        intent.putExtra("email", email)
+    private fun openMainApp(uid: String) {
+        val intent = Intent(this, MenuActivity::class.java)
+        intent.putExtra("uid", uid)
         startActivity(intent)
-        finish() // Close login activity
+        finish()
     }
 }
